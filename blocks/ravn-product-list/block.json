@@ -1,0 +1,75 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "ravn-affiliate/product-list",
+    "title": "Ravn Affiliate",
+    "description": "Toon één product, een lijst of een carrousel met affiliate producten.",
+    "category": "ravn-affiliate",
+    "icon": "cart",
+    "keywords": ["affiliate", "product", "producten", "carrousel", "swiper", "slider", "lijst", "bol", "amazon"],
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"]
+    },
+    "attributes": {
+        "productIds": {
+            "type": "array",
+            "default": [],
+            "items": { "type": "number" }
+        },
+        "productTitles": {
+            "type": "object",
+            "default": {}
+        },
+        "displayMode": {
+            "type": "string",
+            "default": "single",
+            "enum": ["single", "list", "carousel"]
+        },
+        "columns": {
+            "type": "number",
+            "default": 3
+        },
+        "arrows": {
+            "type": "boolean",
+            "default": true
+        },
+        "dots": {
+            "type": "boolean",
+            "default": true
+        },
+        "infinite": {
+            "type": "boolean",
+            "default": true
+        },
+        "autoplay": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideImage": {
+            "type": "boolean",
+            "default": false
+        },
+        "hidePrice": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideDescription": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideSellers": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideRating": {
+            "type": "boolean",
+            "default": false
+        },
+        "subId": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "editorScript": "file:./index.js"
+}

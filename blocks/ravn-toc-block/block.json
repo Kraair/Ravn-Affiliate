@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "ravn-affiliate/toc",
+    "title": "Affiliate Inhoudsopgave",
+    "description": "Automatisch gegenereerde inhoudsopgave van de pagina.",
+    "category": "ravn-affiliate",
+    "icon": "list-view",
+    "keywords": ["toc", "inhoudsopgave", "koppen"],
+    "supports": { "html": false },
+    "attributes": {
+        "startLevel": { "type": "number", "default": 2 },
+        "endLevel":   { "type": "number", "default": 3 },
+        "collapsed":  { "type": "boolean", "default": false }
+    },
+    "editorScript": "file:./index.js"
+}

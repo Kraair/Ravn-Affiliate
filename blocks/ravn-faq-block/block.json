@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "ravn-affiliate/faq",
+    "title": "Affiliate FAQ",
+    "description": "Voeg FAQ accordion toe van het huidige product.",
+    "category": "ravn-affiliate",
+    "icon": "editor-help",
+    "keywords": ["faq", "accordion", "vragen"],
+    "supports": { "html": false },
+    "attributes": {
+        "multiOpen": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "editorScript": "file:./index.js"
+}

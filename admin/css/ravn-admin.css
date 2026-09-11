@@ -1,0 +1,455 @@
+/* Ravn Affiliate – Admin CSS */
+:root {
+    --ravn-admin-primary: #2271b1;
+    --ravn-admin-primary-hover: #135e96;
+    --ravn-admin-danger: #b32d2e;
+    --ravn-admin-success: #00a32a;
+    --ravn-admin-border: #dcdcde;
+    --ravn-admin-bg: #f6f7f7;
+    --ravn-admin-radius: 4px;
+}
+
+/* ── Layout ── */
+.ravn-wrap {
+    max-width: 1200px;
+}
+
+.ravn-form-table th {
+    width: 220px;
+    padding-top: 16px;
+    vertical-align: top;
+    font-weight: 600;
+}
+
+/* ── Tabs ── */
+.ravn-tabs-container {
+    display: flex;
+    gap: 0;
+    margin-top: 20px;
+}
+
+.ravn-tabs-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid var(--ravn-admin-border);
+    border-radius: var(--ravn-admin-radius) 0 0 var(--ravn-admin-radius);
+    overflow: hidden;
+}
+
+.ravn-tabs-nav li a {
+    display: block;
+    padding: 10px 16px;
+    color: #50575e;
+    text-decoration: none;
+    border-bottom: 1px solid var(--ravn-admin-border);
+    font-size: 13px;
+    transition: background 0.15s;
+}
+
+.ravn-tabs-nav li:last-child a {
+    border-bottom: none;
+}
+
+.ravn-tabs-nav li a:hover {
+    background: var(--ravn-admin-bg);
+    color: var(--ravn-admin-primary);
+}
+
+.ravn-tabs-nav li a.active {
+    background: var(--ravn-admin-primary);
+    color: #fff;
+    font-weight: 600;
+}
+
+.ravn-tab-content {
+    flex: 1;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid var(--ravn-admin-border);
+    border-left: none;
+    border-radius: 0 var(--ravn-admin-radius) var(--ravn-admin-radius) 0;
+}
+
+/* Sub-tabs (horizontal) */
+.ravn-sub-tabs.nav-tab-wrapper {
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--ravn-admin-border);
+}
+
+/* ── Product list ── */
+.ravn-stars {
+    color: #f0a500;
+    font-size: 14px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.ravn-stars .empty {
+    color: #ddd;
+}
+
+.ravn-label-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--ravn-admin-primary);
+}
+
+.ravn-shortcode-copy {
+    font-family: monospace;
+    font-size: 12px;
+    background: var(--ravn-admin-bg);
+    border: 1px solid var(--ravn-admin-border);
+    padding: 2px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ravn-shortcode-copy:hover {
+    background: #e8f0fb;
+    border-color: var(--ravn-admin-primary);
+}
+
+.ravn-shortcode-copied {
+    color: var(--ravn-admin-success);
+    font-size: 11px;
+    margin-left: 4px;
+    display: none;
+}
+
+/* ── Product edit ── */
+#ravn-offers-container .ravn-offer-row {
+    background: var(--ravn-admin-bg);
+    border: 1px solid var(--ravn-admin-border);
+    border-radius: var(--ravn-admin-radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+#ravn-offers-container .ravn-offer-row h4 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: #50575e;
+}
+
+.ravn-offer-row .ravn-remove-offer {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: var(--ravn-admin-danger);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+}
+
+.ravn-offer-row .ravn-remove-offer:hover {
+    color: #8b0000;
+}
+
+.ravn-offer-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.ravn-offer-fields label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ravn-offer-fields input,
+.ravn-offer-fields select {
+    font-weight: normal;
+}
+
+.ravn-offer-fields .full-width {
+    grid-column: 1 / -1;
+}
+
+#ravn-add-offer {
+    margin-top: 8px;
+}
+
+/* EAN search */
+.ravn-ean-search-wrap {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+#ravn-ean-result {
+    margin-top: 12px;
+    padding: 12px;
+    background: #edfaef;
+    border: 1px solid #c3e6cb;
+    border-radius: var(--ravn-admin-radius);
+    display: none;
+}
+
+#ravn-ean-result.error {
+    background: #fde8e8;
+    border-color: #f5c6c6;
+}
+
+/* Cloaking info */
+.ravn-cloaking-info {
+    background: var(--ravn-admin-bg);
+    border-left: 4px solid var(--ravn-admin-primary);
+    padding: 10px 14px;
+    border-radius: 0 var(--ravn-admin-radius) var(--ravn-admin-radius) 0;
+    font-size: 13px;
+}
+
+.ravn-cloaking-info code {
+    background: #fff;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid var(--ravn-admin-border);
+}
+
+/* ── Color picker ── */
+.ravn-color-picker-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Settings page ── */
+.ravn-settings-section {
+    background: #fff;
+    border: 1px solid var(--ravn-admin-border);
+    border-radius: var(--ravn-admin-radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+
+.ravn-settings-section h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ravn-admin-border);
+    font-size: 15px;
+}
+
+/* API key field */
+.ravn-api-key-wrap {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.ravn-api-key-wrap input {
+    flex: 1;
+}
+
+.ravn-api-test-btn {
+    white-space: nowrap;
+}
+
+.ravn-api-status {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.ravn-api-status.ok {
+    color: var(--ravn-admin-success);
+}
+
+.ravn-api-status.error {
+    color: var(--ravn-admin-danger);
+}
+
+/* ── Logo rows ── */
+.ravn-logo-rows {
+    border: 1px solid var(--ravn-admin-border);
+    border-radius: var(--ravn-admin-radius);
+    overflow: hidden;
+}
+
+.ravn-logo-row {
+    display: grid;
+    grid-template-columns: 150px 1fr 60px 80px;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--ravn-admin-border);
+    background: #fff;
+}
+
+.ravn-logo-row:last-child {
+    border-bottom: none;
+}
+
+.ravn-logo-row:nth-child(even) {
+    background: var(--ravn-admin-bg);
+}
+
+.ravn-logo-row .ravn-logo-preview {
+    max-height: 32px;
+    max-width: 80px;
+    object-fit: contain;
+}
+
+/* ── Stats cards ── */
+.ravn-stat-cards {
+    flex-wrap: wrap;
+}
+
+.ravn-stat-card {
+    min-width: 150px;
+}
+
+/* ── Import ── */
+.ravn-import-field-map {
+    background: var(--ravn-admin-bg);
+    border: 1px solid var(--ravn-admin-border);
+    border-radius: var(--ravn-admin-radius);
+    padding: 16px 20px;
+}
+
+.ravn-import-field-map h3 {
+    margin-top: 0;
+}
+
+/* ── Dashboard widget ── */
+#ravn_stats_widget table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+#ravn_stats_widget td,
+#ravn_stats_widget th {
+    padding: 5px 6px;
+    border-bottom: 1px solid var(--ravn-admin-border);
+}
+
+#ravn_stats_widget th {
+    font-weight: 600;
+    background: var(--ravn-admin-bg);
+}
+
+/* ── Notices ── */
+.ravn-notice-inline {
+    margin: 10px 0 !important;
+}
+
+/* ── FAQ meta box ── */
+#ravn-faq-container .ravn-faq-question {
+    background: var(--ravn-admin-bg);
+    border: 1px solid var(--ravn-admin-border);
+    border-radius: var(--ravn-admin-radius);
+    padding: 12px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.ravn-faq-question .ravn-remove-faq {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    color: var(--ravn-admin-danger);
+    background: none;
+    border: none;
+    font-size: 16px;
+    padding: 0;
+}
+
+.ravn-faq-question label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.ravn-faq-question input[type="text"],
+.ravn-faq-question textarea {
+    width: 100%;
+}
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+    .ravn-tabs-container {
+        flex-direction: column;
+    }
+    .ravn-tabs-nav {
+        min-width: unset;
+        border-radius: var(--ravn-admin-radius) var(--ravn-admin-radius) 0 0;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .ravn-tabs-nav li a {
+        border-bottom: none;
+        border-right: 1px solid var(--ravn-admin-border);
+    }
+    .ravn-tab-content {
+        border-left: 1px solid var(--ravn-admin-border);
+        border-top: none;
+        border-radius: 0 0 var(--ravn-admin-radius) var(--ravn-admin-radius);
+    }
+    .ravn-offer-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Stijl-voorbeeld op de Styling-pagina ── */
+.ravn-style-preview {
+    margin-top: 30px;
+    max-width: 1200px;
+}
+
+.ravn-style-preview h2 {
+    margin-bottom: 4px;
+}
+
+.ravn-style-preview > .description {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+/* Een neutrale "canvas" achter het voorbeeld, zodat je ook een witte
+   productbox met schaduw goed kunt beoordelen. Het ruitpatroon maakt
+   transparantie/achtergrondkleur meteen zichtbaar. */
+.ravn-style-preview-frame {
+    padding: 30px;
+    border: 1px solid var(--ravn-admin-border);
+    border-radius: var(--ravn-admin-radius);
+    background-color: #fbfbfc;
+    background-image:
+        linear-gradient(45deg, #f0f0f1 25%, transparent 25%),
+        linear-gradient(-45deg, #f0f0f1 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f0f0f1 75%),
+        linear-gradient(-45deg, transparent 75%, #f0f0f1 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+    overflow: hidden;
+}
+
+/* Het voorbeeld mag niet over de volle breedte uitrekken; een realistische
+   maximale breedte geeft een eerlijker beeld van de opmaak. */
+.ravn-style-preview-frame .ravn-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Links in het voorbeeld niet klikbaar maken — het is puur ter illustratie. */
+.ravn-style-preview-frame a {
+    pointer-events: none;
+    cursor: default;
+}

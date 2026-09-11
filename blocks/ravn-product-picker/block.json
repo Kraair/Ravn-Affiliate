@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "ravn-affiliate/product-picker",
+    "title": "Affiliate Product (verouderd)",
+    "description": "Verouderd blok. Gebruik voortaan het blok \"Ravn Affiliate\" met weergavemodus \"Eén product\".",
+    "category": "ravn-affiliate",
+    "icon": "cart",
+    "keywords": ["affiliate", "product", "bol", "amazon"],
+    "supports": {
+        "html": false,
+        "inserter": false,
+        "align": ["wide", "full"]
+    },
+    "attributes": {
+        "productId": {
+            "type": "number",
+            "default": 0
+        },
+        "productTitle": {
+            "type": "string",
+            "default": ""
+        },
+        "hideImage": {
+            "type": "boolean",
+            "default": false
+        },
+        "hidePrice": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideDescription": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideSellers": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideRating": {
+            "type": "boolean",
+            "default": false
+        },
+        "subId": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "editorScript": "file:./index.js"
+}
