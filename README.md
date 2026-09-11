@@ -1,6 +1,6 @@
 # Ravn Affiliate
-
-> ⚠️ **Nog in ontwikkeling.** Deze plugin is niet af en niet getest voor productiegebruik. Gebruik op een live site is op eigen risico; instellingen, database-structuur en functienamen kunnen nog wijzigen zonder migratiepad.
+> [!WARNING]
+> **Nog in ontwikkeling.** Deze plugin is niet af en niet getest voor productiegebruik. Gebruik op een live site is op eigen risico; instellingen, database-structuur en functienamen kunnen nog wijzigen zonder migratiepad.
 
 Ravn Affiliate is een WordPress-plugin voor het bouwen en beheren van affiliate-productpagina's. De plugin haalt productgegevens en aanbiedingen op bij meerdere affiliate-netwerken, toont ze via blokken en shortcodes, en houdt bij hoe bezoekers erop klikken.
 
