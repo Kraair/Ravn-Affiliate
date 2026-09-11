@@ -11,6 +11,21 @@ class Ravn_Cloaking {
 
     public function add_rewrite_rules() {
         add_rewrite_rule( '^go/([^/]+)/?$', 'index.php?ravn_cloak=$matches[1]', 'top' );
+        $this->maybe_flush_rules();
+    }
+
+    /**
+     * Ververst de rewrite rules eenmalig per plugin-versie. Nodig omdat
+     * WordPress rewrite rules alleen cachet bij (de)activeren van de plugin,
+     * niet bij een bestandsvervanging (zip-upload over een bestaande install)
+     * — zonder dit blijft /go/... onherkend en valt de request terug op
+     * normale routing.
+     */
+    private function maybe_flush_rules() {
+        if ( get_option( 'ravn_cloak_rules_version' ) !== RAVN_VERSION ) {
+            flush_rewrite_rules();
+            update_option( 'ravn_cloak_rules_version', RAVN_VERSION );
+        }
     }
 
     public function add_query_vars( $vars ) {
