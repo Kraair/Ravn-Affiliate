@@ -21,14 +21,15 @@ $post_url = esc_url( admin_url( 'admin-post.php' ) );
 <div class="wrap ravn-wrap">
     <h1>Producten importeren</h1>
 
-    <ul class="ravn-sub-tabs nav-tab-wrapper">
-        <li><a href="?page=ravn-affiliate-import&stab=file"         class="nav-tab <?php echo $stab === 'file'         ? 'nav-tab-active' : ''; ?>">Bestand uploaden</a></li>
-        <li><a href="?page=ravn-affiliate-import&stab=url"          class="nav-tab <?php echo $stab === 'url'          ? 'nav-tab-active' : ''; ?>">Feed URL</a></li>
-        <li><a href="?page=ravn-affiliate-import&stab=tradetracker" class="nav-tab <?php echo $stab === 'tradetracker' ? 'nav-tab-active' : ''; ?>">TradeTracker</a></li>
-        <li><a href="?page=ravn-affiliate-import&stab=daisycon"     class="nav-tab <?php echo $stab === 'daisycon'     ? 'nav-tab-active' : ''; ?>">Daisycon</a></li>
+    <div class="ravn-tabs-container">
+    <ul class="ravn-tabs-nav">
+        <li><a href="?page=ravn-affiliate-import&stab=file"         class="<?php echo $stab === 'file'         ? 'active' : ''; ?>">Bestand uploaden</a></li>
+        <li><a href="?page=ravn-affiliate-import&stab=url"          class="<?php echo $stab === 'url'          ? 'active' : ''; ?>">Feed URL</a></li>
+        <li><a href="?page=ravn-affiliate-import&stab=tradetracker" class="<?php echo $stab === 'tradetracker' ? 'active' : ''; ?>">TradeTracker</a></li>
+        <li><a href="?page=ravn-affiliate-import&stab=daisycon"     class="<?php echo $stab === 'daisycon'     ? 'active' : ''; ?>">Daisycon</a></li>
     </ul>
 
-    <div class="ravn-tab-content" style="margin-top:16px;">
+    <div class="ravn-tab-content">
     <?php if ( 'file' === $stab ) : ?>
 
         <h2>Bestand uploaden</h2>
@@ -140,5 +141,6 @@ $post_url = esc_url( admin_url( 'admin-post.php' ) );
         <?php endif; ?>
 
     <?php endif; ?>
-    </div>
+    </div><!-- .ravn-tab-content -->
+    </div><!-- .ravn-tabs-container -->
 </div>

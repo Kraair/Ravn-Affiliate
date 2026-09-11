@@ -18,11 +18,13 @@ $date_to   = sanitize_text_field( $_GET['to']   ?? date( 'Y-m-d' ) );
 <div class="wrap ravn-wrap">
     <h1><?php _e( 'Statistieken', 'ravn-affiliate' ); ?></h1>
 
-    <ul class="ravn-sub-tabs nav-tab-wrapper">
-        <li><a href="?page=ravn-affiliate-stats&stab=clicks" class="nav-tab <?php echo $active_tab === 'clicks' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Klikken', 'ravn-affiliate' ); ?></a></li>
-        <li><a href="?page=ravn-affiliate-stats&stab=stock" class="nav-tab <?php echo $active_tab === 'stock' ? 'nav-tab-active' : ''; ?>"><?php _e( 'Voorraad', 'ravn-affiliate' ); ?></a></li>
+    <div class="ravn-tabs-container">
+    <ul class="ravn-tabs-nav">
+        <li><a href="?page=ravn-affiliate-stats&stab=clicks" class="<?php echo $active_tab === 'clicks' ? 'active' : ''; ?>"><?php _e( 'Klikken', 'ravn-affiliate' ); ?></a></li>
+        <li><a href="?page=ravn-affiliate-stats&stab=stock" class="<?php echo $active_tab === 'stock' ? 'active' : ''; ?>"><?php _e( 'Voorraad', 'ravn-affiliate' ); ?></a></li>
     </ul>
 
+    <div class="ravn-tab-content">
     <?php if ( $active_tab === 'clicks' ) : ?>
 
     <form method="get" style="margin:16px 0; display:flex; gap:12px; align-items:center;">
@@ -47,11 +49,11 @@ $date_to   = sanitize_text_field( $_GET['to']   ?? date( 'Y-m-d' ) );
 
     <div class="ravn-stat-cards" style="display:flex; gap:16px; margin-bottom:20px;">
         <div class="ravn-stat-card" style="background:#fff; border:1px solid #ddd; border-radius:6px; padding:16px 24px; flex:1; text-align:center;">
-            <div style="font-size:2em; font-weight:bold; color:#2271b1;"><?php echo number_format( $total_clicks ); ?></div>
+            <div style="font-size:2em; font-weight:bold; color:var(--ravn-admin-primary, #2271b1);"><?php echo number_format( $total_clicks ); ?></div>
             <div><?php _e( 'Totaal klikken', 'ravn-affiliate' ); ?></div>
         </div>
         <div class="ravn-stat-card" style="background:#fff; border:1px solid #ddd; border-radius:6px; padding:16px 24px; flex:1; text-align:center;">
-            <div style="font-size:2em; font-weight:bold; color:#2271b1;"><?php echo number_format( $unique_products ); ?></div>
+            <div style="font-size:2em; font-weight:bold; color:var(--ravn-admin-primary, #2271b1);"><?php echo number_format( $unique_products ); ?></div>
             <div><?php _e( 'Unieke producten', 'ravn-affiliate' ); ?></div>
         </div>
     </div>
@@ -190,4 +192,6 @@ $date_to   = sanitize_text_field( $_GET['to']   ?? date( 'Y-m-d' ) );
     </form>
 
     <?php endif; ?>
+    </div><!-- .ravn-tab-content -->
+    </div><!-- .ravn-tabs-container -->
 </div>

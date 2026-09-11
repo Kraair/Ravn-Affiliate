@@ -34,7 +34,26 @@ class Ravn_Styling {
         );
         $border_prop = isset( $border_side[ $o['style_border_position'] ] ) ? $border_side[ $o['style_border_position'] ] : 'border';
 
-        $shadow      = ! empty( $o['style_shadow'] )      ? 'box-shadow: 0 2px 8px rgba(0,0,0,.1);' : '';
+        // Hexkleur + dekkingspercentage omzetten naar rgba() voor de slagschaduw.
+        $hex2rgba = function( $hex, $opacity_pct ) {
+            $hex = ltrim( (string) $hex, '#' );
+            if ( strlen( $hex ) === 3 ) {
+                $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+            }
+            if ( strlen( $hex ) !== 6 || ! ctype_xdigit( $hex ) ) {
+                $hex = '000000';
+            }
+            $r = hexdec( substr( $hex, 0, 2 ) );
+            $g = hexdec( substr( $hex, 2, 2 ) );
+            $b = hexdec( substr( $hex, 4, 2 ) );
+            $a = max( 0, min( 100, intval( $opacity_pct ) ) ) / 100;
+            return "rgba({$r},{$g},{$b},{$a})";
+        };
+
+        $shadow = ! empty( $o['style_shadow'] )
+            ? 'box-shadow: ' . $px( 'style_shadow_x' ) . ' ' . $px( 'style_shadow_y' ) . ' ' . $px( 'style_shadow_blur', '8' ) . ' ' . $px( 'style_shadow_spread' ) . ' '
+                . $hex2rgba( $o['style_shadow_color'] ?: '#000000', isset( $o['style_shadow_opacity'] ) ? $o['style_shadow_opacity'] : 10 ) . ';'
+            : '';
         $label_shadow = ! empty( $o['style_label_shadow'] ) ? 'box-shadow: 0 2px 4px rgba(0,0,0,.2);' : '';
         $seller_shadow = ! empty( $o['style_seller_shadow'] ) ? 'box-shadow: 0 1px 3px rgba(0,0,0,.15);' : '';
         $cta_shadow   = ! empty( $o['style_cta_shadow'] )  ? 'box-shadow: 0 2px 6px rgba(0,0,0,.2);' : '';

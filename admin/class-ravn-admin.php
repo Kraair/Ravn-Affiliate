@@ -243,6 +243,7 @@ class Ravn_Admin {
         $post    = wp_unslash( $_POST );
         $defaults = Ravn_Options::defaults();
         $data    = array();
+        $stab    = isset( $post['stab'] ) ? sanitize_key( $post['stab'] ) : 'general';
 
         $checkbox_style_keys = array(
             'style_shadow','style_img_blend',
@@ -264,7 +265,11 @@ class Ravn_Admin {
 
         Ravn_Options::save( $data );
 
-        wp_redirect( add_query_arg( array( 'page' => 'ravn-affiliate-styling', 'saved' => 1 ), admin_url( 'admin.php' ) ) );
+        wp_redirect( add_query_arg( array(
+            'page'  => 'ravn-affiliate-styling',
+            'stab'  => $stab,
+            'saved' => 1,
+        ), admin_url( 'admin.php' ) ) );
         exit;
     }
 

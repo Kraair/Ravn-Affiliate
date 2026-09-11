@@ -90,7 +90,7 @@
                                     '<span style="flex:1;">' + escHtml(p.title || '') +
                                         (p.ean ? ' <code>' + escHtml(p.ean) + '</code>' : '') +
                                         (p.network ? ' <em style="color:#888;">(' + escHtml(p.network) + ')</em>' : '') +
-                                        ((p.price !== null && p.price !== undefined) ? ' <strong style="color:#2271b1;">&euro; ' + escHtml(String(p.price).replace('.', ',')) + '</strong>' : '') +
+                                        ((p.price !== null && p.price !== undefined) ? ' <strong style="color:var(--ravn-admin-primary, #2271b1);">&euro; ' + escHtml(String(p.price).replace('.', ',')) + '</strong>' : '') +
                                         (p.debug ? '<br><small style="color:#b32d2e;">' + escHtml(p.debug) + '</small>' : '') +
                                     '</span>' +
                                     '<button type="button" class="button button-small ravn-ean-use">Gebruik</button>' +
@@ -102,7 +102,7 @@
                                 if (p.url && p.network) {
                                     msg += ' — ' + ravnAdmin.offer_prefilled;
                                 }
-                                $results.html('<p style="color:#2271b1;">' + msg + '</p>');
+                                $results.html('<p style="color:var(--ravn-admin-primary, #2271b1);">' + msg + '</p>');
                             });
                             $list.append($row);
                         });

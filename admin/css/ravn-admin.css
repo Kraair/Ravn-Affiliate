@@ -1,7 +1,7 @@
 /* Ravn Affiliate – Admin CSS */
 :root {
-    --ravn-admin-primary: #2271b1;
-    --ravn-admin-primary-hover: #135e96;
+    --ravn-admin-primary: var(--wp-admin-theme-color, #2271b1);
+    --ravn-admin-primary-hover: var(--wp-admin-theme-color-darker-10, #135e96);
     --ravn-admin-danger: #b32d2e;
     --ravn-admin-success: #00a32a;
     --ravn-admin-border: #dcdcde;
@@ -24,33 +24,36 @@
 /* ── Tabs ── */
 .ravn-tabs-container {
     display: flex;
-    gap: 0;
-    margin-top: 20px;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: 16px;
 }
 
 .ravn-tabs-nav {
+    flex: 0 0 220px;
     list-style: none;
     margin: 0;
-    padding: 0;
-    min-width: 180px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
     background: #fff;
     border: 1px solid var(--ravn-admin-border);
-    border-radius: var(--ravn-admin-radius) 0 0 var(--ravn-admin-radius);
-    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .ravn-tabs-nav li a {
-    display: block;
-    padding: 10px 16px;
-    color: #50575e;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    color: #374151;
     text-decoration: none;
-    border-bottom: 1px solid var(--ravn-admin-border);
-    font-size: 13px;
-    transition: background 0.15s;
-}
-
-.ravn-tabs-nav li:last-child a {
-    border-bottom: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-radius: 6px;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, color 0.15s;
 }
 
 .ravn-tabs-nav li a:hover {
@@ -59,24 +62,20 @@
 }
 
 .ravn-tabs-nav li a.active {
-    background: var(--ravn-admin-primary);
-    color: #fff;
+    background: color-mix(in srgb, var(--ravn-admin-primary) 8%, #fff);
+    border-left-color: var(--ravn-admin-primary);
+    color: var(--ravn-admin-primary);
     font-weight: 600;
 }
 
 .ravn-tab-content {
-    flex: 1;
-    padding: 24px;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 20px 24px 28px;
     background: #fff;
     border: 1px solid var(--ravn-admin-border);
-    border-left: none;
-    border-radius: 0 var(--ravn-admin-radius) var(--ravn-admin-radius) 0;
-}
-
-/* Sub-tabs (horizontal) */
-.ravn-sub-tabs.nav-tab-wrapper {
-    margin-bottom: 0;
-    border-bottom: 1px solid var(--ravn-admin-border);
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 /* ── Product list ── */
@@ -389,19 +388,17 @@
         flex-direction: column;
     }
     .ravn-tabs-nav {
-        min-width: unset;
-        border-radius: var(--ravn-admin-radius) var(--ravn-admin-radius) 0 0;
-        display: flex;
+        flex: 0 0 auto;
+        flex-direction: row;
         flex-wrap: wrap;
     }
     .ravn-tabs-nav li a {
-        border-bottom: none;
-        border-right: 1px solid var(--ravn-admin-border);
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        border-radius: 0;
     }
-    .ravn-tab-content {
-        border-left: 1px solid var(--ravn-admin-border);
-        border-top: none;
-        border-radius: 0 0 var(--ravn-admin-radius) var(--ravn-admin-radius);
+    .ravn-tabs-nav li a.active {
+        border-bottom-color: var(--ravn-admin-primary);
     }
     .ravn-offer-fields {
         grid-template-columns: 1fr;

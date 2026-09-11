@@ -100,7 +100,6 @@ class Ravn_Options {
             'style_padding'        => '20',
             'style_margin_top'     => '0',
             'style_gap'            => '10',
-            'style_shadow'         => 1,
             'style_bg_color'       => '#ffffff',
 
             // Scheidingslijn
@@ -112,6 +111,15 @@ class Ravn_Options {
             'style_border_radius'  => '0',
             'style_border_position'=> 'all',
             'style_border_color'   => '#e0e0e0',
+
+            // Slagschaduw
+            'style_shadow'         => 1,
+            'style_shadow_x'       => '0',
+            'style_shadow_y'       => '2',
+            'style_shadow_blur'    => '8',
+            'style_shadow_spread'  => '0',
+            'style_shadow_color'   => '#000000',
+            'style_shadow_opacity' => '10',
 
             // Kolommen
             'style_col_gap'        => '20',

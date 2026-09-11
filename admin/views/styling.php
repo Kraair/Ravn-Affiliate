@@ -103,7 +103,6 @@ if ( ! function_exists( 'ravn_field_row' ) ) {
                         ravn_num(   $o, 'style_gap',                  'Ruimte tussen producten' );
                         ravn_num(   $o, 'style_content_margin_bottom','Marge onder inhoud' );
                         ravn_color( $o, 'style_bg_color',             'Achtergrondkleur' );
-                        ravn_check( $o, 'style_shadow',               'Slagschaduw', 'Schaduw om productbox tonen' );
                         break;
 
                     case 'stars':
@@ -128,6 +127,13 @@ if ( ! function_exists( 'ravn_field_row' ) ) {
                             'bottom' => 'Onder',
                             'left'   => 'Links',
                         ) );
+                        ravn_check( $o, 'style_shadow',        'Slagschaduw', 'Schaduw om productbox tonen' );
+                        ravn_num(   $o, 'style_shadow_x',      'Afstand X', 'px', -50, 50 );
+                        ravn_num(   $o, 'style_shadow_y',      'Afstand Y', 'px', -50, 50 );
+                        ravn_num(   $o, 'style_shadow_blur',   'Vervaging (blur)', 'px', 0, 100 );
+                        ravn_num(   $o, 'style_shadow_spread', 'Spreiding', 'px', -50, 50 );
+                        ravn_color( $o, 'style_shadow_color',  'Schaduwkleur' );
+                        ravn_num(   $o, 'style_shadow_opacity','Dekking', '%', 0, 100 );
                         break;
 
                     case 'columns':

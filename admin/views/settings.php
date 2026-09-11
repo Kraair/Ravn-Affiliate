@@ -14,21 +14,25 @@ $tabs = array(
     'search'    => 'Zoeken',
 );
 ?>
-<div class="wrap">
+<div class="wrap ravn-wrap">
 <h1>Ravn Affiliate — Instellingen</h1>
-<nav class="nav-tab-wrapper">
-<?php foreach ( $tabs as $key => $label ) : ?>
-    <a href="<?php echo esc_url( add_query_arg( array( 'page' => 'ravn-affiliate-settings', 'tab' => $key ), admin_url( 'admin.php' ) ) ); ?>"
-       class="nav-tab <?php echo $tab === $key ? 'nav-tab-active' : ''; ?>"><?php echo esc_html( $label ); ?></a>
-<?php endforeach; ?>
-</nav>
 
 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 <input type="hidden" name="action" value="ravn_save_settings">
 <input type="hidden" name="settings_tab" value="<?php echo esc_attr( $tab ); ?>">
 <?php wp_nonce_field( 'ravn_save_settings' ); ?>
 
-<div class="ravn-settings-tab-content" style="margin-top:20px;">
+<div class="ravn-tabs-container">
+<ul class="ravn-tabs-nav">
+<?php foreach ( $tabs as $key => $label ) : ?>
+    <li>
+        <a href="<?php echo esc_url( add_query_arg( array( 'page' => 'ravn-affiliate-settings', 'tab' => $key ), admin_url( 'admin.php' ) ) ); ?>"
+           class="<?php echo $tab === $key ? 'active' : ''; ?>"><?php echo esc_html( $label ); ?></a>
+    </li>
+<?php endforeach; ?>
+</ul>
+
+<div class="ravn-tab-content">
 <?php
 
 // ── TAB: ALGEMEEN ──────────────────────────────────────────────────────
@@ -501,11 +505,11 @@ elseif ( 'search' === $tab ) : ?>
 </table>
 <?php endif; ?>
 
-</div><!-- .ravn-settings-tab-content -->
-
 <p class="submit">
     <input type="submit" value="Instellingen opslaan" class="button button-primary button-large">
 </p>
+</div><!-- .ravn-tab-content -->
+</div><!-- .ravn-tabs-container -->
 </form>
 
 <hr style="margin:24px 0;">
