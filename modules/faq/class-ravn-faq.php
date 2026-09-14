@@ -21,7 +21,7 @@ class Ravn_FAQ {
     }
 
     public function render_meta_box( $post ) {
-        wp_nonce_field( 'ravn_faq_save', 'ravn_faq_nonce' );
+        wp_nonce_field( 'ravn_affiliate_faq_save', 'ravn_faq_nonce' );
         $items = Ravn_Database::get_faq_by_post( $post->ID );
         ?>
         <div id="ravn-faq-container">
@@ -66,7 +66,7 @@ class Ravn_FAQ {
 
     public function save_meta_box( $post_id ) {
         if ( ! isset( $_POST['ravn_faq_nonce'] ) ) return;
-        if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ravn_faq_nonce'] ) ), 'ravn_faq_save' ) ) return;
+        if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ravn_faq_nonce'] ) ), 'ravn_affiliate_faq_save' ) ) return;
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
         if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 

@@ -76,9 +76,9 @@ $pages    = ceil( $total / $per_page );
             <td>
                 <a href="<?php echo esc_url( $edit_url ); ?>" class="button button-small">Bewerk</a>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline;" onsubmit="return confirm('Weet je zeker dat je dit product wilt verwijderen?')">
-                    <input type="hidden" name="action" value="ravn_delete_product">
+                    <input type="hidden" name="action" value="ravn_affiliate_delete_product">
                     <input type="hidden" name="product_id" value="<?php echo $p->id; ?>">
-                    <?php wp_nonce_field( 'ravn_delete_product' ); ?>
+                    <?php wp_nonce_field( 'ravn_affiliate_delete_product' ); ?>
                     <button type="submit" class="button button-small" style="color:#a00">Verwijder</button>
                 </form>
             </td>

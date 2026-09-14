@@ -4,10 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class Ravn_Import {
 
     public function __construct() {
-        add_action( 'admin_post_ravn_import_file',        array( $this, 'handle_file_import' ) );
-        add_action( 'admin_post_ravn_import_feed',        array( $this, 'handle_feed_import' ) );
-        add_action( 'admin_post_ravn_import_tradetracker',array( $this, 'handle_tradetracker_import' ) );
-        add_action( 'admin_post_ravn_import_daisycon',    array( $this, 'handle_daisycon_import' ) );
+        add_action( 'admin_post_ravn_affiliate_import_file',        array( $this, 'handle_file_import' ) );
+        add_action( 'admin_post_ravn_affiliate_import_feed',        array( $this, 'handle_feed_import' ) );
+        add_action( 'admin_post_ravn_affiliate_import_tradetracker',array( $this, 'handle_tradetracker_import' ) );
+        add_action( 'admin_post_ravn_affiliate_import_daisycon',    array( $this, 'handle_daisycon_import' ) );
     }
 
     private function redirect_back( $status, $message ) {
@@ -21,14 +21,14 @@ class Ravn_Import {
     }
 
     public function handle_file_import() {
-        check_admin_referer( 'ravn_import_file' );
+        check_admin_referer( 'ravn_affiliate_import_file' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
-        if ( empty( $_FILES['ravn_import_file']['tmp_name'] ) || ! is_uploaded_file( $_FILES['ravn_import_file']['tmp_name'] ) ) {
+        if ( empty( $_FILES['ravn_affiliate_import_file']['tmp_name'] ) || ! is_uploaded_file( $_FILES['ravn_affiliate_import_file']['tmp_name'] ) ) {
             $this->redirect_back( 'error', 'Geen geldig bestand geüpload.' );
         }
 
-        $file = $_FILES['ravn_import_file'];
+        $file = $_FILES['ravn_affiliate_import_file'];
 
         // 1. Upload-fout van PHP zelf afvangen.
         if ( ! empty( $file['error'] ) ) {
@@ -89,7 +89,7 @@ class Ravn_Import {
     }
 
     public function handle_feed_import() {
-        check_admin_referer( 'ravn_import_feed' );
+        check_admin_referer( 'ravn_affiliate_import_feed' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         $url     = esc_url_raw( wp_unslash( $_POST['ravn_feed_url'] ?? '' ) );
@@ -118,7 +118,7 @@ class Ravn_Import {
     }
 
     public function handle_tradetracker_import() {
-        check_admin_referer( 'ravn_import_tradetracker' );
+        check_admin_referer( 'ravn_affiliate_import_tradetracker' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         $ean   = sanitize_text_field( wp_unslash( $_POST['ravn_ean'] ?? '' ) );
@@ -136,7 +136,7 @@ class Ravn_Import {
     }
 
     public function handle_daisycon_import() {
-        check_admin_referer( 'ravn_import_daisycon' );
+        check_admin_referer( 'ravn_affiliate_import_daisycon' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         $feed_url = Ravn_Options::get( 'daisycon_feed_url' );

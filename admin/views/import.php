@@ -35,14 +35,14 @@ $post_url = esc_url( admin_url( 'admin-post.php' ) );
         <h2>Bestand uploaden</h2>
         <p>Upload een CSV of XML bestand met productgegevens.</p>
         <form method="post" action="<?php echo $post_url; ?>" enctype="multipart/form-data">
-            <input type="hidden" name="action" value="ravn_import_file">
+            <input type="hidden" name="action" value="ravn_affiliate_import_file">
             <input type="hidden" name="MAX_FILE_SIZE" value="5242880">
-            <?php wp_nonce_field( 'ravn_import_file' ); ?>
+            <?php wp_nonce_field( 'ravn_affiliate_import_file' ); ?>
             <table class="form-table ravn-form-table">
                 <tr>
-                    <th><label for="ravn_import_file">Bestand</label></th>
+                    <th><label for="ravn_affiliate_import_file">Bestand</label></th>
                     <td>
-                        <input type="file" id="ravn_import_file" name="ravn_import_file" accept=".csv,.xml,.txt,text/csv,text/xml" required>
+                        <input type="file" id="ravn_affiliate_import_file" name="ravn_affiliate_import_file" accept=".csv,.xml,.txt,text/csv,text/xml" required>
                         <p class="description">Ondersteunde formaten: CSV, XML. Maximaal 5 MB.</p>
                     </td>
                 </tr>
@@ -75,8 +75,8 @@ $post_url = esc_url( admin_url( 'admin-post.php' ) );
         <h2>Feed URL importeren</h2>
         <p>Importeer producten vanuit een externe CSV of XML feed URL.</p>
         <form method="post" action="<?php echo $post_url; ?>">
-            <input type="hidden" name="action" value="ravn_import_feed">
-            <?php wp_nonce_field( 'ravn_import_feed' ); ?>
+            <input type="hidden" name="action" value="ravn_affiliate_import_feed">
+            <?php wp_nonce_field( 'ravn_affiliate_import_feed' ); ?>
             <table class="form-table ravn-form-table">
                 <tr>
                     <th><label for="ravn_feed_url">Feed URL</label></th>
@@ -107,8 +107,8 @@ $post_url = esc_url( admin_url( 'admin-post.php' ) );
         <?php else : ?>
             <p>Importeer producten direct vanuit het TradeTracker netwerk via de API.</p>
             <form method="post" action="<?php echo $post_url; ?>">
-                <input type="hidden" name="action" value="ravn_import_tradetracker">
-                <?php wp_nonce_field( 'ravn_import_tradetracker' ); ?>
+                <input type="hidden" name="action" value="ravn_affiliate_import_tradetracker">
+                <?php wp_nonce_field( 'ravn_affiliate_import_tradetracker' ); ?>
                 <table class="form-table ravn-form-table">
                     <tr>
                         <th><label for="ravn_ean">EAN (optioneel)</label></th>
@@ -133,8 +133,8 @@ $post_url = esc_url( admin_url( 'admin-post.php' ) );
         <?php else : ?>
             <p>Importeer producten vanuit de ingestelde Daisycon feed.</p>
             <form method="post" action="<?php echo $post_url; ?>">
-                <input type="hidden" name="action" value="ravn_import_daisycon">
-                <?php wp_nonce_field( 'ravn_import_daisycon' ); ?>
+                <input type="hidden" name="action" value="ravn_affiliate_import_daisycon">
+                <?php wp_nonce_field( 'ravn_affiliate_import_daisycon' ); ?>
                 <p><strong>Feed URL:</strong> <code><?php echo esc_html( $o['daisycon_feed_url'] ); ?></code></p>
                 <?php submit_button( 'Daisycon importeren' ); ?>
             </form>

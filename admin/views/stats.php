@@ -118,8 +118,8 @@ $date_to   = sanitize_text_field( $_GET['to']   ?? date( 'Y-m-d' ) );
     <h2 style="color:#b32d2e;"><?php _e( 'Statistieken wissen', 'ravn-affiliate' ); ?></h2>
     <p><?php _e( 'Dit verwijdert alle klikstatistieken permanent. Deze actie kan niet ongedaan worden gemaakt.', 'ravn-affiliate' ); ?></p>
     <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" onsubmit="return confirm('<?php esc_attr_e( 'Weet je het zeker? Alle statistieken worden permanent verwijderd.', 'ravn-affiliate' ); ?>');">
-        <input type="hidden" name="action" value="ravn_clear_stats">
-        <?php wp_nonce_field( 'ravn_clear_stats' ); ?>
+        <input type="hidden" name="action" value="ravn_affiliate_clear_stats">
+        <?php wp_nonce_field( 'ravn_affiliate_clear_stats' ); ?>
         <button type="submit" class="button button-secondary" style="color:#b32d2e; border-color:#b32d2e;">
             <?php _e( 'Alle statistieken wissen', 'ravn-affiliate' ); ?>
         </button>
@@ -184,8 +184,8 @@ $date_to   = sanitize_text_field( $_GET['to']   ?? date( 'Y-m-d' ) );
     <hr style="margin:30px 0;">
     <h2 style="color:#b32d2e;"><?php _e( 'Voorraadlog wissen', 'ravn-affiliate' ); ?></h2>
     <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" onsubmit="return confirm('<?php esc_attr_e( 'Weet je het zeker? Alle statistieken (klikken én voorraadlog) worden permanent verwijderd.', 'ravn-affiliate' ); ?>');">
-        <input type="hidden" name="action" value="ravn_clear_stats">
-        <?php wp_nonce_field( 'ravn_clear_stats' ); ?>
+        <input type="hidden" name="action" value="ravn_affiliate_clear_stats">
+        <?php wp_nonce_field( 'ravn_affiliate_clear_stats' ); ?>
         <button type="submit" class="button button-secondary" style="color:#b32d2e; border-color:#b32d2e;">
             <?php _e( 'Voorraadlog + klikken wissen', 'ravn-affiliate' ); ?>
         </button>

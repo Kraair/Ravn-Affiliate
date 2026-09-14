@@ -24,11 +24,11 @@ foreach ( $tables as $table ) {
 
 // Verwijder alle plugin opties
 $options = [
-    'ravn_options',
-    'ravn_db_version',
-    'ravn_cron_last_run',
+    'ravn_affiliate_options',
+    'ravn_affiliate_version',
     'ravn_cron_timeout_count',
-    'ravn_cron_running',
+    'ravn_last_cron_run',
+    'ravn_cloak_rules_version',
 ];
 
 foreach ( $options as $option ) {
@@ -36,8 +36,7 @@ foreach ( $options as $option ) {
 }
 
 // Verwijder transients
-$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_ap_%'" ); // phpcs:ignore
-$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_ap_%'" ); // phpcs:ignore
+delete_transient( 'ravn_bol_token' );
 
 // Multisite: verwijder per blog
 if ( is_multisite() ) {
@@ -50,6 +49,7 @@ if ( is_multisite() ) {
         foreach ( $options as $option ) {
             delete_option( $option );
         }
+        delete_transient( 'ravn_bol_token' );
         restore_current_blog();
     }
 }

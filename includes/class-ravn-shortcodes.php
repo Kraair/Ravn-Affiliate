@@ -14,7 +14,7 @@ class Ravn_Shortcodes {
         add_shortcode( 'ravn_toc',      array( $this, 'shortcode_toc' ) );
 
         // AJAX voor click tracking (public)
-        add_action( 'wp_ajax_ravn_track_click',        array( $this, 'ajax_track_click' ) );
+        add_action( 'wp_ajax_ravn_affiliate_track_click',        array( $this, 'ajax_track_click' ) );
         add_action( 'wp_ajax_nopriv_ravn_track_click', array( $this, 'ajax_track_click' ) );
 
         // REST endpoint voor Gutenberg blok zoeken
@@ -48,7 +48,7 @@ class Ravn_Shortcodes {
 
         wp_localize_script( 'ravn-public', 'ravnVars', array(
             'ajaxUrl'          => admin_url( 'admin-ajax.php' ),
-            'nonce'            => wp_create_nonce( 'ravn_public_nonce' ),
+            'nonce'            => wp_create_nonce( 'ravn_affiliate_public_nonce' ),
             'trackingEnabled'  => ! empty( $opts['stats_link_tracking'] ) ? 1 : 0,
             'newWindow'        => ! empty( $opts['new_window'] ) ? 1 : 0,
             'carouselArrows'   => ! empty( $opts['carousel_arrows'] ) ? 1 : 0,
@@ -252,7 +252,7 @@ class Ravn_Shortcodes {
     // ─── AJAX click tracking ────────────────────────────────────────────────
 
     public function ajax_track_click() {
-        check_ajax_referer( 'ravn_public_nonce', 'nonce' );
+        check_ajax_referer( 'ravn_affiliate_public_nonce', 'nonce' );
         $opts = Ravn_Options::get_all();
         if ( empty( $opts['stats_link_tracking'] ) ) {
             wp_send_json_success();

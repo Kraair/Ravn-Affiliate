@@ -18,9 +18,9 @@ $tabs = array(
 <h1>Ravn Affiliate — Instellingen</h1>
 
 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-<input type="hidden" name="action" value="ravn_save_settings">
+<input type="hidden" name="action" value="ravn_affiliate_save_settings">
 <input type="hidden" name="settings_tab" value="<?php echo esc_attr( $tab ); ?>">
-<?php wp_nonce_field( 'ravn_save_settings' ); ?>
+<?php wp_nonce_field( 'ravn_affiliate_save_settings' ); ?>
 
 <div class="ravn-tabs-container">
 <ul class="ravn-tabs-nav">
@@ -329,8 +329,8 @@ elseif ( 'cron' === $tab ) :
 
 <h3>Nu ophalen</h3>
 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline;">
-    <input type="hidden" name="action" value="ravn_run_cron">
-    <?php wp_nonce_field( 'ravn_run_cron' ); ?>
+    <input type="hidden" name="action" value="ravn_affiliate_run_cron">
+    <?php wp_nonce_field( 'ravn_affiliate_run_cron' ); ?>
     <input type="submit" value="Nieuwe gegevens nu ophalen" class="button button-secondary">
 </form>
 
@@ -515,9 +515,9 @@ elseif ( 'search' === $tab ) : ?>
 <hr style="margin:24px 0;">
 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
       onsubmit="return confirm('Weet je zeker dat je de instellingen van dit tabblad terugzet naar de standaardwaarden?');">
-    <input type="hidden" name="action" value="ravn_reset_tab">
+    <input type="hidden" name="action" value="ravn_affiliate_reset_tab">
     <input type="hidden" name="settings_tab" value="<?php echo esc_attr( $tab ); ?>">
-    <?php wp_nonce_field( 'ravn_reset_tab' ); ?>
+    <?php wp_nonce_field( 'ravn_affiliate_reset_tab' ); ?>
     <button type="submit" class="button button-secondary">Dit tabblad terugzetten naar standaardwaarden</button>
     <p class="description" style="margin-top:6px;">
         Handig als instellingen ongewild zijn uitgezet. Raakt alleen dit tabblad.

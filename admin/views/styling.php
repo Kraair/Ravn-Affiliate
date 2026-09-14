@@ -76,9 +76,9 @@ if ( ! function_exists( 'ravn_field_row' ) ) {
     <h1>Ravn Affiliate — Styling</h1>
 
     <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-        <input type="hidden" name="action" value="ravn_save_styling">
+        <input type="hidden" name="action" value="ravn_affiliate_save_styling">
         <input type="hidden" name="stab" value="<?php echo esc_attr( $stab ); ?>">
-        <?php wp_nonce_field( 'ravn_save_styling' ); ?>
+        <?php wp_nonce_field( 'ravn_affiliate_save_styling' ); ?>
 
         <div class="ravn-tabs-container">
             <ul class="ravn-tabs-nav">

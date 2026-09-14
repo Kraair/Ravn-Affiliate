@@ -36,9 +36,9 @@ $stock_options = array( 'in_stock' => 'Op voorraad', 'out_of_stock' => 'Niet op 
 <?php endif; ?>
 
 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-    <input type="hidden" name="action" value="ravn_save_product">
+    <input type="hidden" name="action" value="ravn_affiliate_save_product">
     <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-    <?php wp_nonce_field( 'ravn_save_product' ); ?>
+    <?php wp_nonce_field( 'ravn_affiliate_save_product' ); ?>
 
     <div id="poststuff">
         <div id="post-body" class="metabox-holder columns-2">

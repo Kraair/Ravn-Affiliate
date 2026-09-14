@@ -6,19 +6,19 @@ class Ravn_Admin {
     public function __construct() {
         add_action( 'admin_menu',            array( $this, 'add_menus' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-        add_action( 'admin_post_ravn_save_settings', array( $this, 'save_settings' ) );
-        add_action( 'admin_post_ravn_reset_tab', array( $this, 'reset_tab_settings' ) );
-        add_action( 'admin_post_ravn_save_styling',  array( $this, 'save_styling' ) );
-        add_action( 'admin_post_ravn_save_product',  array( $this, 'save_product' ) );
-        add_action( 'admin_post_ravn_delete_product',array( $this, 'delete_product' ) );
-        add_action( 'admin_post_ravn_run_cron',      array( $this, 'run_cron_now' ) );
-        add_action( 'admin_post_ravn_clear_stats',   array( $this, 'clear_stats' ) );
-        add_action( 'wp_ajax_ravn_search_ean',       array( $this, 'ajax_search_ean' ) );
-        add_action( 'wp_ajax_ravn_bol_diag_ean',     array( $this, 'ajax_bol_diag_ean' ) );
-        add_action( 'wp_ajax_ravn_delete_offer',     array( $this, 'ajax_delete_offer' ) );
-        add_action( 'wp_ajax_ravn_test_bol_connection', array( $this, 'ajax_test_bol_connection' ) );
-        add_action( 'wp_ajax_ravn_test_awin_connection', array( $this, 'ajax_test_awin_connection' ) );
-        add_action( 'wp_ajax_ravn_test_tradetracker_connection', array( $this, 'ajax_test_tradetracker_connection' ) );
+        add_action( 'admin_post_ravn_affiliate_save_settings', array( $this, 'save_settings' ) );
+        add_action( 'admin_post_ravn_affiliate_reset_tab', array( $this, 'reset_tab_settings' ) );
+        add_action( 'admin_post_ravn_affiliate_save_styling',  array( $this, 'save_styling' ) );
+        add_action( 'admin_post_ravn_affiliate_save_product',  array( $this, 'save_product' ) );
+        add_action( 'admin_post_ravn_affiliate_delete_product',array( $this, 'delete_product' ) );
+        add_action( 'admin_post_ravn_affiliate_run_cron',      array( $this, 'run_cron_now' ) );
+        add_action( 'admin_post_ravn_affiliate_clear_stats',   array( $this, 'clear_stats' ) );
+        add_action( 'wp_ajax_ravn_affiliate_search_ean',       array( $this, 'ajax_search_ean' ) );
+        add_action( 'wp_ajax_ravn_affiliate_bol_diag_ean',     array( $this, 'ajax_bol_diag_ean' ) );
+        add_action( 'wp_ajax_ravn_affiliate_delete_offer',     array( $this, 'ajax_delete_offer' ) );
+        add_action( 'wp_ajax_ravn_affiliate_test_bol_connection', array( $this, 'ajax_test_bol_connection' ) );
+        add_action( 'wp_ajax_ravn_affiliate_test_awin_connection', array( $this, 'ajax_test_awin_connection' ) );
+        add_action( 'wp_ajax_ravn_affiliate_test_tradetracker_connection', array( $this, 'ajax_test_tradetracker_connection' ) );
         add_action( 'admin_notices',               array( $this, 'admin_notices' ) );
     }
 
@@ -54,7 +54,7 @@ class Ravn_Admin {
         wp_enqueue_script( 'ravn-admin', RAVN_PLUGIN_URL . 'admin/js/ravn-admin.js', array( 'jquery', 'wp-color-picker' ), RAVN_VERSION, true );
         wp_localize_script( 'ravn-admin', 'ravnAdmin', array(
             'ajax_url'             => admin_url( 'admin-ajax.php' ),
-            'nonce'                => wp_create_nonce( 'ravn_admin_nonce' ),
+            'nonce'                => wp_create_nonce( 'ravn_affiliate_admin_nonce' ),
             'searching'            => 'Zoeken...',
             'search_btn'           => 'Zoeken',
             'found'                => 'Gevonden',
@@ -137,7 +137,7 @@ class Ravn_Admin {
      * andere tabs ongewild op 0 werden gezet.
      */
     public function reset_tab_settings() {
-        check_admin_referer( 'ravn_reset_tab' );
+        check_admin_referer( 'ravn_affiliate_reset_tab' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         $post = wp_unslash( $_POST );
@@ -168,7 +168,7 @@ class Ravn_Admin {
     }
 
     public function save_settings() {
-        check_admin_referer( 'ravn_save_settings' );
+        check_admin_referer( 'ravn_affiliate_save_settings' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         $post = wp_unslash( $_POST );
@@ -237,7 +237,7 @@ class Ravn_Admin {
     }
 
     public function save_styling() {
-        check_admin_referer( 'ravn_save_styling' );
+        check_admin_referer( 'ravn_affiliate_save_styling' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         $post    = wp_unslash( $_POST );
@@ -316,7 +316,7 @@ class Ravn_Admin {
     }
 
     public function save_product() {
-        check_admin_referer( 'ravn_save_product' );
+        check_admin_referer( 'ravn_affiliate_save_product' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         $post       = wp_unslash( $_POST );
@@ -396,7 +396,7 @@ class Ravn_Admin {
     }
 
     public function delete_product() {
-        check_admin_referer( 'ravn_delete_product' );
+        check_admin_referer( 'ravn_affiliate_delete_product' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         $product_id = intval( $_POST['product_id'] ?? $_GET['product_id'] ?? 0 );
@@ -408,7 +408,7 @@ class Ravn_Admin {
     }
 
     public function run_cron_now() {
-        check_admin_referer( 'ravn_run_cron' );
+        check_admin_referer( 'ravn_affiliate_run_cron' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         Ravn_Cron::run_now();
@@ -418,7 +418,7 @@ class Ravn_Admin {
     }
 
     public function clear_stats() {
-        check_admin_referer( 'ravn_clear_stats' );
+        check_admin_referer( 'ravn_affiliate_clear_stats' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
 
         Ravn_Database::clear_stats();
@@ -429,7 +429,7 @@ class Ravn_Admin {
     // ─── AJAX ────────────────────────────────────────────────────────────────
 
     public function ajax_search_ean() {
-        check_ajax_referer( 'ravn_admin_nonce', 'nonce' );
+        check_ajax_referer( 'ravn_affiliate_admin_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error( 'Geen toegang' );
 
         $query   = sanitize_text_field( wp_unslash( $_POST['query'] ?? '' ) );
@@ -446,7 +446,7 @@ class Ravn_Admin {
      * wordt zonder in logbestanden te hoeven zoeken.
      */
     public function ajax_bol_diag_ean() {
-        check_ajax_referer( 'ravn_admin_nonce', 'nonce' );
+        check_ajax_referer( 'ravn_affiliate_admin_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error( array( 'message' => 'Geen toegang' ) );
 
         $ean = sanitize_text_field( wp_unslash( $_POST['ean'] ?? '' ) );
@@ -468,7 +468,7 @@ class Ravn_Admin {
     }
 
     public function ajax_delete_offer() {
-        check_ajax_referer( 'ravn_admin_nonce', 'nonce' );
+        check_ajax_referer( 'ravn_affiliate_admin_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error( 'Geen toegang' );
 
         $offer_id = intval( wp_unslash( $_POST['offer_id'] ?? 0 ) );
@@ -480,7 +480,7 @@ class Ravn_Admin {
     }
 
     public function ajax_test_bol_connection() {
-        check_ajax_referer( 'ravn_admin_nonce', 'nonce' );
+        check_ajax_referer( 'ravn_affiliate_admin_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error( array( 'message' => 'Geen toegang' ) );
 
         // Gebruik eventueel de nog niet opgeslagen velden uit het formulier zelf,
@@ -517,7 +517,7 @@ class Ravn_Admin {
     }
 
     public function ajax_test_awin_connection() {
-        check_ajax_referer( 'ravn_admin_nonce', 'nonce' );
+        check_ajax_referer( 'ravn_affiliate_admin_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error( array( 'message' => 'Geen toegang' ) );
 
         $temp = array(
@@ -546,7 +546,7 @@ class Ravn_Admin {
     }
 
     public function ajax_test_tradetracker_connection() {
-        check_ajax_referer( 'ravn_admin_nonce', 'nonce' );
+        check_ajax_referer( 'ravn_affiliate_admin_nonce', 'nonce' );
         if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error( array( 'message' => 'Geen toegang' ) );
 
         $temp = array(

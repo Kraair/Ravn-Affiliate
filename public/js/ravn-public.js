@@ -22,7 +22,7 @@
             if (!offerId) return;
 
             var fd = new FormData();
-            fd.append('action',     'ravn_track_click');
+            fd.append('action',     'ravn_affiliate_track_click');
             fd.append('nonce',      ravnVars.nonce);
             fd.append('offer_id',   offerId);
             fd.append('product_id', productId || '');

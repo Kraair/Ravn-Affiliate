@@ -76,7 +76,7 @@
                 url:  ravnAdmin.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'ravn_search_ean',
+                    action: 'ravn_affiliate_search_ean',
                     nonce:  ravnAdmin.nonce,
                     query:  query
                 },
@@ -149,7 +149,7 @@
                 url:  ravnAdmin.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'ravn_bol_diag_ean',
+                    action: 'ravn_affiliate_bol_diag_ean',
                     nonce:  ravnAdmin.nonce,
                     ean:    ean
                 },
@@ -301,7 +301,7 @@
         initGenericConnectionTest({
             buttonId: 'ravn-test-bol-connection',
             resultId: 'ravn-bol-test-result',
-            action:   'ravn_test_bol_connection',
+            action:   'ravn_affiliate_test_bol_connection',
             fields:   { client_id: '#bol_client_id', client_secret: '#bol_client_secret' },
             required: ['#bol_client_id', '#bol_client_secret']
         });
@@ -311,7 +311,7 @@
         initGenericConnectionTest({
             buttonId: 'ravn-test-awin-connection',
             resultId: 'ravn-awin-test-result',
-            action:   'ravn_test_awin_connection',
+            action:   'ravn_affiliate_test_awin_connection',
             fields:   { publisher_id: '#awin_publisher_id', api_token: '#awin_api_token', advertiser_id: '#awin_advertiser_id' },
             required: ['#awin_publisher_id', '#awin_api_token', '#awin_advertiser_id']
         });
@@ -321,7 +321,7 @@
         initGenericConnectionTest({
             buttonId: 'ravn-test-tradetracker-connection',
             resultId: 'ravn-tradetracker-test-result',
-            action:   'ravn_test_tradetracker_connection',
+            action:   'ravn_affiliate_test_tradetracker_connection',
             fields:   { customer_id: '#tradetracker_customer_id', passphrase: '#tradetracker_api_key', site_id: '#tradetracker_site_id' },
             required: ['#tradetracker_customer_id', '#tradetracker_api_key', '#tradetracker_site_id']
         });
