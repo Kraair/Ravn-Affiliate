@@ -12,7 +12,7 @@ Ravn Affiliate is een WordPress-plugin voor het bouwen en beheren van affiliate-
 - Daisycon
 - TradeTracker
 
-## Functionaliteit
+## Functionaliteit 
 
 - **Producten & aanbiedingen** — producten opzoeken op EAN, aanbiedingen van meerdere verkopers aan één product koppelen, en die vergelijken in de front-end.
 - **Weergave** — productboxen, lijsten en carrousels via Gutenberg-blokken of shortcodes, met een instelbare stijl (kleuren, randen, kolommen, sterren, popup).
