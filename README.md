@@ -1,4 +1,4 @@
-# Ravn Affiliate
+# Ravn Affiliate Products plugin
 > [!WARNING]
 > **Nog in ontwikkeling.** Deze plugin is niet af en niet getest voor productiegebruik. Gebruik op een live site is op eigen risico; instellingen, database-structuur en functienamen kunnen nog wijzigen zonder migratiepad.
 
