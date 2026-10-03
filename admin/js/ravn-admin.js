@@ -78,7 +78,8 @@
                 data: {
                     action: 'ravn_affiliate_search_ean',
                     nonce:  ravnAdmin.nonce,
-                    query:  query
+                    query:  query,
+                    product_id: $('input[name="product_id"]').val() || 0
                 },
                 success: function(res) {
                     if (res.success && res.data && res.data.length) {
@@ -92,8 +93,9 @@
                                         (p.network ? ' <em style="color:#888;">(' + escHtml(p.network) + ')</em>' : '') +
                                         ((p.price !== null && p.price !== undefined) ? ' <strong style="color:var(--ravn-admin-primary, #2271b1);">&euro; ' + escHtml(String(p.price).replace('.', ',')) + '</strong>' : '') +
                                         (p.debug ? '<br><small style="color:#b32d2e;">' + escHtml(p.debug) + '</small>' : '') +
+                                        (p.existing ? '<br><span class="ravn-ean-exists" style="display:inline-block;margin-top:4px;padding:2px 8px;background:#fcf0c0;border:1px solid #dba617;border-radius:3px;color:#7a5a00;">&#9888; Dit product is al toegevoegd: <a href="' + escAttr(p.existing.edit_url) + '">' + escHtml(p.existing.title || ('#' + p.existing.id)) + '</a></span>' : '') +
                                     '</span>' +
-                                    '<button type="button" class="button button-small ravn-ean-use">Gebruik</button>' +
+                                    '<button type="button" class="button button-small ravn-ean-use">' + (p.existing ? 'Toch gebruiken' : 'Gebruik') + '</button>' +
                                 '</div>'
                             );
                             $row.find('.ravn-ean-use').on('click', function() {

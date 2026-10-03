@@ -437,6 +437,32 @@ class Ravn_Admin {
         $limit   = intval( Ravn_Options::get( 'ean_max_results', 10 ) );
         $results = Ravn_API::search_all_networks( $query, $limit );
 
+        // Markeer resultaten waarvan het EAN al als product is toegevoegd, zodat
+        // je niet per ongeluk dubbel toevoegt. Het product dat je nu aan het
+        // bewerken bent telt niet mee.
+        global $wpdb;
+        $current_id = intval( $_POST['product_id'] ?? 0 );
+        if ( is_array( $results ) ) {
+            foreach ( $results as &$result ) {
+                $ean = is_array( $result ) && ! empty( $result['ean'] ) ? preg_replace( '/\s+/', '', (string) $result['ean'] ) : '';
+                if ( '' === $ean ) continue;
+
+                $existing = $wpdb->get_row( $wpdb->prepare(
+                    "SELECT id, title FROM {$wpdb->prefix}ravn_products WHERE ean = %s AND id <> %d ORDER BY id ASC LIMIT 1",
+                    $ean,
+                    $current_id
+                ) );
+                if ( $existing ) {
+                    $result['existing'] = array(
+                        'id'       => intval( $existing->id ),
+                        'title'    => $existing->title,
+                        'edit_url' => add_query_arg( array( 'page' => 'ravn-affiliate-edit', 'product_id' => intval( $existing->id ) ), admin_url( 'admin.php' ) ),
+                    );
+                }
+            }
+            unset( $result );
+        }
+
         wp_send_json_success( $results );
     }
 
