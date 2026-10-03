@@ -226,6 +226,7 @@ class Ravn_Admin {
         // Cron opnieuw laten inplannen als de cron-instellingen zijn gewijzigd.
         if ( 'cron' === $tab ) {
             wp_clear_scheduled_hook( 'ravn_cron_fetch' );
+            wp_clear_scheduled_hook( 'ravn_cron_continue' );
         }
 
         wp_redirect( add_query_arg( array(
@@ -413,7 +414,7 @@ class Ravn_Admin {
 
         Ravn_Cron::run_now();
 
-        wp_redirect( add_query_arg( array( 'page' => 'ravn-affiliate-settings', 'cron_ran' => 1 ), admin_url( 'admin.php' ) ) );
+        wp_redirect( add_query_arg( array( 'page' => 'ravn-affiliate-settings', 'tab' => 'cron', 'cron_ran' => 1 ), admin_url( 'admin.php' ) ) );
         exit;
     }
 
@@ -584,7 +585,7 @@ class Ravn_Admin {
             echo '<div class="notice notice-success is-dismissible"><p>Dit tabblad is teruggezet naar de standaardwaarden.</p></div>';
         }
         if ( isset( $_GET['cron_ran'] ) ) {
-            echo '<div class="notice notice-success is-dismissible"><p>Gegevens worden opgehaald. Dit kan even duren.</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>Ophalen gestart. Bij veel producten gaat het in delen op de achtergrond verder; de voortgang staat op het tabblad Auto bijwerken.</p></div>';
         }
         if ( isset( $_GET['cleared'] ) ) {
             echo '<div class="notice notice-success is-dismissible"><p>Statistieken gewist.</p></div>';

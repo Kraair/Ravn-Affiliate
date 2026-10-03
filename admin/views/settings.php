@@ -262,10 +262,14 @@ elseif ( 'carousel' === $tab ) : ?>
 elseif ( 'cron' === $tab ) :
     $last_run = get_option( 'ravn_last_cron_run' );
     $next_run = wp_next_scheduled( 'ravn_cron_fetch' );
+    $status   = Ravn_Cron::status();
     ?>
 <h2>Automatisch gegevens ophalen</h2>
 
 <?php if ( $last_run ) echo '<p>Laatste keer bijgewerkt: <strong>' . esc_html( mysql2date( 'd-m-Y H:i', $last_run ) ) . '</strong></p>'; ?>
+<?php if ( $status['running'] ) echo '<p><strong>Bezig met ophalen:</strong> ' . intval( $status['done'] ) . ' van ' . intval( $status['total'] ) . ' producten verwerkt. Dit gaat op de achtergrond verder zodra er bezoek op de site is.</p>'; ?>
+<?php if ( $status['wpcron_disabled'] ) echo '<div class="notice notice-warning inline"><p>WP-Cron is uitgeschakeld (<code>DISABLE_WP_CRON</code> in wp-config.php). De plugin voert het ophalen daarom zelf uit tijdens bezoeken aan de site of het dashboard, maar dit kan trager zijn dan normaal.</p></div>'; ?>
+<?php if ( $status['overdue'] ) echo '<div class="notice notice-warning inline"><p>Het geplande ophalen loopt achter. De plugin haalt het automatisch in bij het volgende bezoek.</p></div>'; ?>
 <?php if ( $next_run ) echo '<p>Volgende keer: <strong>' . esc_html( date_i18n( 'd-m-Y H:i', $next_run ) ) . '</strong></p>'; ?>
 
 <table class="form-table">
@@ -328,11 +332,8 @@ elseif ( 'cron' === $tab ) :
 </table>
 
 <h3>Nu ophalen</h3>
-<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline;">
-    <input type="hidden" name="action" value="ravn_affiliate_run_cron">
-    <?php wp_nonce_field( 'ravn_affiliate_run_cron' ); ?>
-    <input type="submit" value="Nieuwe gegevens nu ophalen" class="button button-secondary">
-</form>
+<?php // Knop hoort bij het aparte formulier onderaan (geneste formulieren zijn ongeldig). ?>
+<button type="submit" form="ravn-run-cron-form" class="button button-secondary">Nieuwe gegevens nu ophalen</button>
 
 <?php // ── TAB: STATISTIEKEN ────────────────────────────────────────────────
 elseif ( 'stats' === $tab ) : ?>
@@ -511,6 +512,13 @@ elseif ( 'search' === $tab ) : ?>
 </div><!-- .ravn-tab-content -->
 </div><!-- .ravn-tabs-container -->
 </form>
+
+<?php if ( 'cron' === $tab ) : ?>
+<form id="ravn-run-cron-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+    <input type="hidden" name="action" value="ravn_affiliate_run_cron">
+    <?php wp_nonce_field( 'ravn_affiliate_run_cron' ); ?>
+</form>
+<?php endif; ?>
 
 <hr style="margin:24px 0;">
 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"

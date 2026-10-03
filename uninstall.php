@@ -28,6 +28,8 @@ $options = [
     'ravn_affiliate_version',
     'ravn_cron_timeout_count',
     'ravn_last_cron_run',
+    'ravn_last_cron_ts',
+    'ravn_cron_state',
     'ravn_cloak_rules_version',
 ];
 
@@ -37,6 +39,7 @@ foreach ( $options as $option ) {
 
 // Verwijder transients
 delete_transient( 'ravn_bol_token' );
+delete_transient( 'ravn_cron_lock' );
 
 // Multisite: verwijder per blog
 if ( is_multisite() ) {
