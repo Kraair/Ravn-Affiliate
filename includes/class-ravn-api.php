@@ -562,46 +562,108 @@ class Ravn_API {
 
     // ───────────────────────────────────────────────────────────────────────
     //  TRADETRACKER  (SOAP API)
+    //
+    //  Geverifieerd tegen de live WSDL (https://ws.tradetracker.com/soap/affiliate?wsdl):
+    //   - authenticate( customerID, passphrase, sandbox, locale, demo )
+    //     → de 4e parameter is een LOCALE (bijv. "nl_NL"), géén site-ID.
+    //   - getFeedProducts( affiliateSiteID, FeedProductFilter )
+    //     → filter: feedID, campaignID, query, priceFrom, priceTo, limit, offset.
+    //   - getAffiliateSites( AffiliateSiteFilter ) voor de verbindingstest.
+    //  Het site-ID wordt dus per aanroep meegegeven, niet bij authenticatie.
     // ───────────────────────────────────────────────────────────────────────
 
+    const TRADETRACKER_WSDL = 'https://ws.tradetracker.com/soap/affiliate?wsdl';
+
     /**
-     * Haalt productdata op bij TradeTracker via de SOAP-API.
+     * Locale voor TradeTracker, afgeleid van de bol-landcode-instelling (NL/BE).
+     */
+    private static function tradetracker_locale() {
+        return 'BE' === self::bol_country_code() ? 'nl_BE' : 'nl_NL';
+    }
+
+    /**
+     * Maakt een geauthenticeerde SoapClient. De sessie is cookie-gebonden aan
+     * deze client-instantie, dus hergebruik dezelfde instantie voor vervolgcalls.
      *
-     * LET OP — gedeeltelijk geverifieerd: het endpoint en de authenticatie-
-     * parameters (customerID, passphrase, affiliateSiteID) zijn bevestigd via
-     * meerdere onafhankelijke, actuele client-libraries. De exacte methode-
-     * naam voor het ophalen van productfeed-data kon echter niet met
-     * zekerheid worden vastgesteld — TradeTracker's eigen documentatie
-     * noemt "product feed data" als functie, maar niet de letterlijke
-     * SOAP-methodenaam. Controleer dit tegen je eigen WSDL-toegang
-     * (via SoapClient::__getFunctions() na inloggen) vóórdat je hierop
-     * vertrouwt in productie — pas $method en $options hieronder aan indien
-     * de daadwerkelijke methode een andere naam blijkt te hebben.
+     * @throws SoapFault|Exception
+     */
+    private static function tradetracker_client( $customer_id, $passphrase ) {
+        $client = new SoapClient( self::TRADETRACKER_WSDL, array(
+            'trace'              => 0,
+            'exceptions'         => true,
+            'connection_timeout' => 15,
+            'cache_wsdl'         => WSDL_CACHE_MEMORY,
+        ) );
+        $client->authenticate( (int) $customer_id, $passphrase, false, self::tradetracker_locale(), false );
+        return $client;
+    }
+
+    /**
+     * SOAP geeft bij één item een object en bij meerdere een array terug.
+     */
+    private static function tradetracker_to_list( $value ) {
+        if ( empty( $value ) ) return array();
+        if ( is_object( $value ) ) return array( $value );
+        return is_array( $value ) ? $value : array();
+    }
+
+    /**
+     * Zet een TradeTracker FeedProduct om naar de platte rij die de import verwacht.
+     */
+    private static function tradetracker_normalize_product( $item ) {
+        $item = (array) $item;
+
+        $extra = array();
+        foreach ( self::tradetracker_to_list( $item['additional'] ?? null ) as $el ) {
+            $el = (array) $el;
+            if ( isset( $el['name'] ) ) {
+                $extra[ strtolower( (string) $el['name'] ) ] = $el['value'] ?? '';
+            }
+        }
+
+        $ean = '';
+        foreach ( array( 'ean', 'gtin', 'ean13', 'barcode', 'ean_code' ) as $key ) {
+            if ( ! empty( $extra[ $key ] ) ) { $ean = (string) $extra[ $key ]; break; }
+        }
+
+        return array(
+            'name'        => $item['name'] ?? '',
+            'ean'         => $ean,
+            'imageUrl'    => $item['imageURL'] ?? '',
+            'description' => $item['description'] ?? '',
+            'price'       => $item['price'] ?? 0,
+            'url'         => $item['productURL'] ?? '',
+            'identifier'  => $item['identifier'] ?? '',
+        );
+    }
+
+    /**
+     * Haalt producten op uit de TradeTracker-productfeeds.
+     *
+     * De SOAP-API kan niet op EAN filteren; $ean wordt daarom als vrije
+     * zoekterm (query) meegegeven. Resultaten worden genormaliseerd.
      */
     public static function tradetracker_get_products( $ean = '', $limit = 10 ) {
-        $customer_id = Ravn_Options::get( 'tradetracker_customer_id' );
-        $passphrase  = Ravn_Options::get( 'tradetracker_api_key' );
-        $site_id     = Ravn_Options::get( 'tradetracker_site_id' );
+        $customer_id = trim( (string) Ravn_Options::get( 'tradetracker_customer_id' ) );
+        $passphrase  = trim( (string) Ravn_Options::get( 'tradetracker_api_key' ) );
+        $site_id     = trim( (string) Ravn_Options::get( 'tradetracker_site_id' ) );
         if ( ! $customer_id || ! $passphrase || ! $site_id ) return array();
 
         if ( ! class_exists( 'SoapClient' ) ) return array();
 
         try {
-            $client = new SoapClient( 'https://ws.tradetracker.com/soap/affiliate?wsdl', array( 'trace' => 0, 'exceptions' => true ) );
-            // Bevestigde signature uit officiële client-SDK's: customerID,
-            // passphrase, sandbox (bool), affiliateSiteID, demo (bool).
-            $client->authenticate( $customer_id, $passphrase, false, $site_id, false );
-
-            if ( ! method_exists( $client, 'getProductFeeds' ) ) {
-                if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                    error_log( '[Ravn tradetracker] Methode getProductFeeds bestaat niet op deze WSDL. Beschikbare methodes: ' . implode( ', ', $client->__getFunctions() ) );
-                }
-                return array();
+            $client  = self::tradetracker_client( $customer_id, $passphrase );
+            $options = array( 'limit' => max( 1, intval( $limit ) ) );
+            if ( '' !== $ean ) {
+                $options['query'] = $ean;
             }
+            $result = $client->getFeedProducts( (int) $site_id, $options );
 
-            $options = array( 'EAN' => $ean, 'limit' => $limit );
-            $result  = $client->getProductFeeds( null, null, $options );
-            return ! empty( $result->items ) ? (array) $result->items : array();
+            $items = array();
+            foreach ( self::tradetracker_to_list( $result ) as $item ) {
+                $items[] = self::tradetracker_normalize_product( $item );
+            }
+            return $items;
         } catch ( Exception $e ) {
             if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
                 error_log( '[Ravn tradetracker] SOAP-fout: ' . $e->getMessage() );
@@ -611,15 +673,13 @@ class Ravn_API {
     }
 
     /**
-     * Test of de TradeTracker-koppeling technisch werkt: authenticatie via
-     * de bevestigde getAffiliateSites()-methode (uit meerdere onafhankelijke
-     * SDK's bekend te bestaan), onafhankelijk van de onzekere product-methode
-     * hierboven.
+     * Test of de TradeTracker-koppeling werkt: authenticeert en controleert of
+     * het ingevulde Affiliate Site ID bij dit account hoort.
      */
     public static function tradetracker_test_connection() {
-        $customer_id = Ravn_Options::get( 'tradetracker_customer_id' );
-        $passphrase  = Ravn_Options::get( 'tradetracker_api_key' );
-        $site_id     = Ravn_Options::get( 'tradetracker_site_id' );
+        $customer_id = trim( (string) Ravn_Options::get( 'tradetracker_customer_id' ) );
+        $passphrase  = trim( (string) Ravn_Options::get( 'tradetracker_api_key' ) );
+        $site_id     = trim( (string) Ravn_Options::get( 'tradetracker_site_id' ) );
 
         if ( ! $customer_id || ! $passphrase || ! $site_id ) {
             return array( 'success' => false, 'message' => 'Customer ID, Passphrase en/of Affiliate Site ID zijn niet ingevuld.' );
@@ -629,19 +689,22 @@ class Ravn_API {
         }
 
         try {
-            $client = new SoapClient( 'https://ws.tradetracker.com/soap/affiliate?wsdl', array( 'trace' => 0, 'exceptions' => true, 'connection_timeout' => 15 ) );
-            $client->authenticate( $customer_id, $passphrase, false, $site_id, false );
+            $client = self::tradetracker_client( $customer_id, $passphrase );
+            $sites  = self::tradetracker_to_list( $client->getAffiliateSites( array() ) );
 
-            if ( ! method_exists( $client, 'getAffiliateSites' ) ) {
-                return array( 'success' => false, 'message' => 'Authenticatie leek te lukken, maar de verwachte testmethode is niet beschikbaar op deze WSDL. De API is mogelijk gewijzigd.' );
+            $ids = array();
+            foreach ( $sites as $site ) {
+                $ids[] = (string) ( ( (array) $site )['ID'] ?? '' );
             }
 
-            $sites = $client->getAffiliateSites();
-            return array( 'success' => true, 'message' => 'Verbinding werkt: authenticatie gelukt en sites opgehaald.' );
+            if ( $ids && ! in_array( $site_id, $ids, true ) ) {
+                return array( 'success' => false, 'message' => 'Authenticatie gelukt, maar Affiliate Site ID ' . $site_id . ' hoort niet bij dit account. Beschikbare site-ID\'s: ' . implode( ', ', $ids ) . '.' );
+            }
+            return array( 'success' => true, 'message' => 'Verbinding werkt: authenticatie gelukt en Affiliate Site ID is geldig.' );
         } catch ( SoapFault $e ) {
             $msg = $e->getMessage();
-            if ( false !== stripos( $msg, 'auth' ) || false !== stripos( $msg, 'credential' ) || false !== stripos( $msg, 'login' ) ) {
-                return array( 'success' => false, 'message' => 'Authenticatie afgewezen door TradeTracker. Controleer Customer ID, Passphrase en Affiliate Site ID. Melding: ' . $msg );
+            if ( false !== stripos( $msg, 'auth' ) || false !== stripos( $msg, 'credential' ) || false !== stripos( $msg, 'login' ) || false !== stripos( $msg, 'passphrase' ) ) {
+                return array( 'success' => false, 'message' => 'Authenticatie afgewezen door TradeTracker. Controleer Customer ID en Passphrase. Melding: ' . $msg );
             }
             return array( 'success' => false, 'message' => 'SOAP-fout van TradeTracker: ' . $msg );
         } catch ( Exception $e ) {

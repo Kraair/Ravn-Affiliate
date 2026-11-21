@@ -11,6 +11,7 @@ class Ravn_Admin {
         add_action( 'admin_post_ravn_affiliate_save_styling',  array( $this, 'save_styling' ) );
         add_action( 'admin_post_ravn_affiliate_save_product',  array( $this, 'save_product' ) );
         add_action( 'admin_post_ravn_affiliate_delete_product',array( $this, 'delete_product' ) );
+        add_action( 'admin_post_ravn_affiliate_bulk_products', array( $this, 'bulk_products' ) );
         add_action( 'admin_post_ravn_affiliate_run_cron',      array( $this, 'run_cron_now' ) );
         add_action( 'admin_post_ravn_affiliate_clear_stats',   array( $this, 'clear_stats' ) );
         add_action( 'wp_ajax_ravn_affiliate_search_ean',       array( $this, 'ajax_search_ean' ) );
@@ -408,6 +409,24 @@ class Ravn_Admin {
         exit;
     }
 
+    public function bulk_products() {
+        check_admin_referer( 'ravn_affiliate_bulk_products' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
+
+        $action = sanitize_key( wp_unslash( $_POST['bulk_action'] ?? '' ) );
+        $ids    = array_filter( array_map( 'intval', (array) ( $_POST['product_ids'] ?? array() ) ) );
+        $done   = 0;
+
+        if ( 'delete' === $action ) {
+            foreach ( $ids as $id ) {
+                if ( Ravn_Database::delete_product( $id ) ) $done++;
+            }
+        }
+
+        wp_redirect( add_query_arg( array( 'page' => 'ravn-affiliate', 'bulk_deleted' => $done ), admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
     public function run_cron_now() {
         check_admin_referer( 'ravn_affiliate_run_cron' );
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Geen toegang' );
@@ -604,6 +623,9 @@ class Ravn_Admin {
     // ─── Admin notices ────────────────────────────────────────────────────────
 
     public function admin_notices() {
+        if ( isset( $_GET['bulk_deleted'] ) && isset( $_GET['page'] ) && 'ravn-affiliate' === $_GET['page'] ) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . intval( $_GET['bulk_deleted'] ) . ' product(en) verwijderd.</p></div>';
+        }
         if ( isset( $_GET['saved'] ) ) {
             echo '<div class="notice notice-success is-dismissible"><p>Instellingen opgeslagen.</p></div>';
         }

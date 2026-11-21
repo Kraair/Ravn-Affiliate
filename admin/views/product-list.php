@@ -7,7 +7,8 @@
 <?php
 $search   = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
 $page_num = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
-$per_page = 20;
+$per_page = isset( $_GET['per_page'] ) ? intval( $_GET['per_page'] ) : 20;
+if ( ! in_array( $per_page, array( 20, 50, 100, 200 ), true ) ) $per_page = 20;
 $products = Ravn_Database::get_products( array( 'search' => $search, 'page' => $page_num, 'per_page' => $per_page ) );
 $total    = Ravn_Database::count_products( $search );
 $pages    = ceil( $total / $per_page );
@@ -17,13 +18,45 @@ $pages    = ceil( $total / $per_page );
     <input type="hidden" name="page" value="ravn-affiliate">
     <p class="search-box">
         <input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Zoek op titel of EAN...">
+        <input type="hidden" name="per_page" value="<?php echo (int) $per_page; ?>">
         <input type="submit" value="Zoeken" class="button">
     </p>
 </form>
 
+<form method="post" id="ravn-bulk-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+    <input type="hidden" name="action" value="ravn_affiliate_bulk_products">
+    <?php wp_nonce_field( 'ravn_affiliate_bulk_products' ); ?>
+</form>
+
+<div class="tablenav top">
+    <div class="alignleft actions bulkactions">
+        <select name="bulk_action" form="ravn-bulk-form" id="ravn-bulk-action">
+            <option value="">Bulkacties</option>
+            <option value="delete">Verwijderen</option>
+        </select>
+        <button type="submit" form="ravn-bulk-form" class="button" id="ravn-bulk-apply">Toepassen</button>
+        <span id="ravn-bulk-count" style="margin-left:8px;color:#666;"></span>
+    </div>
+    <div class="alignright">
+        <form method="get" style="display:inline;">
+            <input type="hidden" name="page" value="ravn-affiliate">
+            <input type="hidden" name="s" value="<?php echo esc_attr( $search ); ?>">
+            <label>Per pagina
+                <select name="per_page" onchange="this.form.submit()">
+                    <?php foreach ( array( 20, 50, 100, 200 ) as $n ) : ?>
+                        <option value="<?php echo $n; ?>" <?php selected( $per_page, $n ); ?>><?php echo $n; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+            <span class="displaying-num"><?php echo (int) $total; ?> producten</span>
+        </form>
+    </div>
+</div>
+
 <table class="wp-list-table widefat fixed striped posts">
     <thead>
         <tr>
+            <td class="manage-column column-cb check-column" style="width:30px"><input type="checkbox" id="ravn-select-all" aria-label="Alles selecteren"></td>
             <th style="width:60px">Afb.</th>
             <th>Titel</th>
             <th>EAN</th>
@@ -37,7 +70,7 @@ $pages    = ceil( $total / $per_page );
     </thead>
     <tbody>
     <?php if ( empty( $products ) ) : ?>
-        <tr><td colspan="9">Geen producten gevonden. <a href="<?php echo esc_url( admin_url( 'admin.php?page=ravn-affiliate-add' ) ); ?>">Voeg je eerste product toe</a>.</td></tr>
+        <tr><td colspan="10">Geen producten gevonden. <a href="<?php echo esc_url( admin_url( 'admin.php?page=ravn-affiliate-add' ) ); ?>">Voeg je eerste product toe</a>.</td></tr>
     <?php else : ?>
         <?php foreach ( $products as $p ) :
             $offers        = Ravn_Database::get_offers( $p->id );
@@ -45,6 +78,7 @@ $pages    = ceil( $total / $per_page );
             $edit_url      = admin_url( 'admin.php?page=ravn-affiliate-edit&product_id=' . $p->id );
             ?>
         <tr>
+            <th scope="row" class="check-column"><input type="checkbox" class="ravn-row-cb" name="product_ids[]" value="<?php echo (int) $p->id; ?>" form="ravn-bulk-form"></th>
             <td><?php if ( $p->image_url ) : ?>
                 <img src="<?php echo esc_url( $p->image_url ); ?>" width="48" height="48" style="object-fit:contain;" alt="">
             <?php endif; ?></td>
@@ -93,7 +127,7 @@ $pages    = ceil( $total / $per_page );
     <div class="tablenav-pages">
         <?php
         echo paginate_links( array(
-            'base'    => add_query_arg( 'paged', '%#%' ),
+            'base'    => add_query_arg( array( 'paged' => '%#%', 'per_page' => $per_page ) ),
             'format'  => '',
             'current' => $page_num,
             'total'   => $pages,
@@ -103,4 +137,28 @@ $pages    = ceil( $total / $per_page );
     </div>
 </div>
 <?php endif; ?>
+<script>
+(function () {
+    var all = document.getElementById('ravn-select-all');
+    var boxes = function () { return document.querySelectorAll('.ravn-row-cb'); };
+    var count = document.getElementById('ravn-bulk-count');
+    function update() {
+        var n = document.querySelectorAll('.ravn-row-cb:checked').length;
+        count.textContent = n ? n + ' geselecteerd' : '';
+        all.checked = n > 0 && n === boxes().length;
+    }
+    all.addEventListener('change', function () {
+        boxes().forEach(function (b) { b.checked = all.checked; });
+        update();
+    });
+    boxes().forEach(function (b) { b.addEventListener('change', update); });
+    document.getElementById('ravn-bulk-form').addEventListener('submit', function (e) {
+        var n = document.querySelectorAll('.ravn-row-cb:checked').length;
+        var action = document.getElementById('ravn-bulk-action').value;
+        if (!action) { e.preventDefault(); alert('Kies eerst een bulkactie.'); return; }
+        if (!n) { e.preventDefault(); alert('Selecteer eerst één of meer producten.'); return; }
+        if (!confirm(n + ' product(en) definitief verwijderen, inclusief aanbieders en statistieken?')) e.preventDefault();
+    });
+})();
+</script>
 </div>
