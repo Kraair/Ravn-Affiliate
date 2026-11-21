@@ -65,6 +65,9 @@ class Ravn_Options {
             'cron_max_timeouts'    => 3,
             'cron_networks'        => array( 'bol', 'amazon', 'tradetracker', 'daisycon', 'awin', 'tradedoubler', 'adtraction', 'partnerize' ),
 
+            // === GEGEVENS BIJ VERWIJDEREN ===
+            'delete_data_on_uninstall' => 0, // standaard blijven producten bewaard
+
             // === 7. STATISTIEKEN ===
             'stats_link_tracking'  => 0,
             'stats_stock_tracking' => 0,

@@ -490,6 +490,10 @@ elseif ( 'modules' === $tab ) : ?>
     <tr><th>Schema module</th><td><label><input type="checkbox" name="module_schema" <?php checked( $o['module_schema'] ); ?>> Activeer schema markup (JSON-LD)</label></td></tr>
     <tr><th>Statistieken module</th><td><label><input type="checkbox" name="module_stats" <?php checked( $o['module_stats'] ); ?>> Activeer statistieken en dashboard widget</label></td></tr>
     <tr><th>Import module</th><td><label><input type="checkbox" name="module_import" <?php checked( $o['module_import'] ); ?>> Activeer bulkimport module</label></td></tr>
+    <tr><th>Gegevens bij verwijderen</th><td>
+        <label><input type="checkbox" name="delete_data_on_uninstall" <?php checked( ! empty( $o['delete_data_on_uninstall'] ) ); ?>> Verwijder alle producten, aanbieders, statistieken en instellingen als de plugin wordt verwijderd</label>
+        <p class="description"><strong>Standaard uit.</strong> Laat dit uitgeschakeld om je producten te bewaren wanneer je de plugin verwijdert en opnieuw installeert.</p>
+    </td></tr>
 </table>
 
 <?php // ── TAB: ZOEKEN ───────────────────────────────────────────────────────

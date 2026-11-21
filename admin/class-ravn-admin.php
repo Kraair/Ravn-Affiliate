@@ -127,7 +127,7 @@ class Ravn_Admin {
                 'adtraction_api_key', 'adtraction_channel_id',
                 'partnerize_user_api_key', 'partnerize_app_api_key',
             ),
-            'modules'  => array( 'module_faq', 'module_toc', 'module_schema', 'module_stats', 'module_import' ),
+            'modules'  => array( 'module_faq', 'module_toc', 'module_schema', 'module_stats', 'module_import', 'delete_data_on_uninstall' ),
             'search'   => array( 'exclude_from_search' ),
         );
     }
@@ -194,7 +194,7 @@ class Ravn_Admin {
             'show_last_updated','enable_cta','enable_cta_info','show_seller_count',
             'new_window','nofollow','sponsored','auto_sub_id',
             'carousel_arrows','carousel_dots','carousel_infinite','carousel_autoplay',
-            'cron_active','stats_link_tracking','stats_stock_tracking','exclude_from_search',
+            'cron_active','stats_link_tracking','stats_stock_tracking','exclude_from_search','delete_data_on_uninstall',
         );
 
         $data = array();

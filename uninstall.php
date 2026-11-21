@@ -9,6 +9,13 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
+// Veiligheid: gegevens blijven standaard bewaard. Alleen verwijderen als de
+// gebruiker dit expliciet heeft ingeschakeld (Instellingen → Modules).
+$ravn_saved = get_option( 'ravn_affiliate_options' );
+if ( empty( $ravn_saved['delete_data_on_uninstall'] ) ) {
+    return;
+}
+
 // Verwijder databasetabellen
 $tables = [
     $wpdb->prefix . 'ravn_products',
