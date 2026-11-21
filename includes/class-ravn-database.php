@@ -101,26 +101,65 @@ class Ravn_Database {
 
     // ── Products ────────────────────────────────────────────────────────────
 
+    /**
+     * Bouwt de WHERE-clausule voor zoeken + voorraadfilter (gedeeld door
+     * get_products() en count_products(), zodat aantallen kloppen).
+     *
+     * Voorraadfilter (op basis van de aanbieders van een product):
+     *  in_stock     - minstens één aanbieder op voorraad
+     *  out_of_stock - geen enkele aanbieder op voorraad, minstens één uitverkocht
+     *  unknown      - wel aanbieders, maar alleen met onbekende status
+     *  no_offers    - geen aanbieders
+     */
+    private static function build_product_where( $search = '', $stock = '' ) {
+        global $wpdb;
+        $offers = $wpdb->prefix . 'ravn_offers';
+        $where  = ' WHERE 1=1';
+        $params = array();
+
+        if ( '' !== $search ) {
+            $where   .= ' AND (title LIKE %s OR ean LIKE %s)';
+            $like     = '%' . $wpdb->esc_like( $search ) . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        $has = function ( $status ) use ( $offers, $wpdb ) {
+            return "EXISTS (SELECT 1 FROM {$offers} o WHERE o.product_id = {$wpdb->prefix}ravn_products.id AND o.stock_status = '{$status}')";
+        };
+        $any = "EXISTS (SELECT 1 FROM {$offers} o WHERE o.product_id = {$wpdb->prefix}ravn_products.id)";
+
+        switch ( $stock ) {
+            case 'in_stock':
+                $where .= ' AND ' . $has( 'in_stock' );
+                break;
+            case 'out_of_stock':
+                $where .= ' AND NOT ' . $has( 'in_stock' ) . ' AND ' . $has( 'out_of_stock' );
+                break;
+            case 'unknown':
+                $where .= ' AND ' . $any . ' AND NOT ' . $has( 'in_stock' ) . ' AND NOT ' . $has( 'out_of_stock' );
+                break;
+            case 'no_offers':
+                $where .= ' AND NOT ' . $any;
+                break;
+        }
+
+        return array( $where, $params );
+    }
+
     public static function get_products( $args = array() ) {
         global $wpdb;
         $defaults = array(
             'per_page' => 20,
             'page'     => 1,
             'search'   => '',
+            'stock'    => '',
             'orderby'  => 'id',
             'order'    => 'DESC',
         );
         $args = wp_parse_args( $args, $defaults );
 
-        $where  = ' WHERE 1=1';
-        $params = array();
-
-        if ( ! empty( $args['search'] ) ) {
-            $where   .= ' AND (title LIKE %s OR ean LIKE %s)';
-            $like     = '%' . $wpdb->esc_like( $args['search'] ) . '%';
-            $params[] = $like;
-            $params[] = $like;
-        }
+        list( $where, $params ) = self::build_product_where( (string) $args['search'], (string) $args['stock'] );
 
         $allowed_orderby = array( 'id', 'title', 'created_at', 'last_updated', 'rating' );
         $orderby = in_array( $args['orderby'], $allowed_orderby ) ? $args['orderby'] : 'id';
@@ -128,25 +167,19 @@ class Ravn_Database {
 
         $offset = ( absint( $args['page'] ) - 1 ) * absint( $args['per_page'] );
 
-        if ( ! empty( $params ) ) {
-            $sql = $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}ravn_products{$where} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
-                array_merge( $params, array( $args['per_page'], $offset ) )
-            );
-        } else {
-            $sql = "SELECT * FROM {$wpdb->prefix}ravn_products{$where} ORDER BY {$orderby} {$order} LIMIT {$args['per_page']} OFFSET {$offset}";
-        }
+        $sql = $wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}ravn_products{$where} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
+            array_merge( $params, array( absint( $args['per_page'] ), $offset ) )
+        );
 
         return $wpdb->get_results( $sql );
     }
 
-    public static function count_products( $search = '' ) {
+    public static function count_products( $search = '', $stock = '' ) {
         global $wpdb;
-        if ( $search ) {
-            $like = '%' . $wpdb->esc_like( $search ) . '%';
-            return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->prefix}ravn_products WHERE title LIKE %s OR ean LIKE %s", $like, $like ) );
-        }
-        return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}ravn_products" );
+        list( $where, $params ) = self::build_product_where( (string) $search, (string) $stock );
+        $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}ravn_products{$where}";
+        return (int) $wpdb->get_var( $params ? $wpdb->prepare( $sql, $params ) : $sql );
     }
 
     public static function get_product( $id ) {

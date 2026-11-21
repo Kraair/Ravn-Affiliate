@@ -9,8 +9,10 @@ $search   = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) 
 $page_num = isset( $_GET['paged'] ) ? max( 1, intval( $_GET['paged'] ) ) : 1;
 $per_page = isset( $_GET['per_page'] ) ? intval( $_GET['per_page'] ) : 20;
 if ( ! in_array( $per_page, array( 20, 50, 100, 200 ), true ) ) $per_page = 20;
-$products = Ravn_Database::get_products( array( 'search' => $search, 'page' => $page_num, 'per_page' => $per_page ) );
-$total    = Ravn_Database::count_products( $search );
+$stock    = isset( $_GET['stock'] ) ? sanitize_key( wp_unslash( $_GET['stock'] ) ) : '';
+if ( ! in_array( $stock, array( 'in_stock', 'out_of_stock', 'unknown', 'no_offers' ), true ) ) $stock = '';
+$products = Ravn_Database::get_products( array( 'search' => $search, 'stock' => $stock, 'page' => $page_num, 'per_page' => $per_page ) );
+$total    = Ravn_Database::count_products( $search, $stock );
 $pages    = ceil( $total / $per_page );
 ?>
 
@@ -19,6 +21,13 @@ $pages    = ceil( $total / $per_page );
     <p class="search-box">
         <input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Zoek op titel of EAN...">
         <input type="hidden" name="per_page" value="<?php echo (int) $per_page; ?>">
+        <select name="stock" onchange="this.form.submit()">
+            <option value="">Alle voorraadstatussen</option>
+            <option value="in_stock" <?php selected( $stock, 'in_stock' ); ?>>Minstens één op voorraad</option>
+            <option value="out_of_stock" <?php selected( $stock, 'out_of_stock' ); ?>>Uitverkocht (niets op voorraad)</option>
+            <option value="unknown" <?php selected( $stock, 'unknown' ); ?>>Voorraad onbekend</option>
+            <option value="no_offers" <?php selected( $stock, 'no_offers' ); ?>>Zonder aanbieders</option>
+        </select>
         <input type="submit" value="Zoeken" class="button">
     </p>
 </form>
@@ -41,6 +50,7 @@ $pages    = ceil( $total / $per_page );
         <form method="get" style="display:inline;">
             <input type="hidden" name="page" value="ravn-affiliate">
             <input type="hidden" name="s" value="<?php echo esc_attr( $search ); ?>">
+            <input type="hidden" name="stock" value="<?php echo esc_attr( $stock ); ?>">
             <label>Per pagina
                 <select name="per_page" onchange="this.form.submit()">
                     <?php foreach ( array( 20, 50, 100, 200 ) as $n ) : ?>
@@ -146,7 +156,7 @@ $pages    = ceil( $total / $per_page );
     <div class="tablenav-pages">
         <?php
         echo paginate_links( array(
-            'base'    => add_query_arg( array( 'paged' => '%#%', 'per_page' => $per_page ) ),
+            'base'    => add_query_arg( array( 'paged' => '%#%', 'per_page' => $per_page, 'stock' => $stock ) ),
             'format'  => '',
             'current' => $page_num,
             'total'   => $pages,
