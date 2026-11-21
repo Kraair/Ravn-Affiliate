@@ -63,6 +63,7 @@ $pages    = ceil( $total / $per_page );
             <th>Beoordeling</th>
             <th>Label</th>
             <th>Aanbieders</th>
+            <th>Voorraad</th>
             <th>Shortcode</th>
             <th>Bijgewerkt</th>
             <th>Acties</th>
@@ -70,11 +71,16 @@ $pages    = ceil( $total / $per_page );
     </thead>
     <tbody>
     <?php if ( empty( $products ) ) : ?>
-        <tr><td colspan="10">Geen producten gevonden. <a href="<?php echo esc_url( admin_url( 'admin.php?page=ravn-affiliate-add' ) ); ?>">Voeg je eerste product toe</a>.</td></tr>
+        <tr><td colspan="11">Geen producten gevonden. <a href="<?php echo esc_url( admin_url( 'admin.php?page=ravn-affiliate-add' ) ); ?>">Voeg je eerste product toe</a>.</td></tr>
     <?php else : ?>
         <?php foreach ( $products as $p ) :
             $offers        = Ravn_Database::get_offers( $p->id );
             $offers_count  = count( $offers );
+            $stock_counts  = array( 'in_stock' => 0, 'out_of_stock' => 0, 'unknown' => 0 );
+            foreach ( $offers as $o ) {
+                $st = isset( $stock_counts[ $o->stock_status ] ) ? $o->stock_status : 'unknown';
+                $stock_counts[ $st ]++;
+            }
             $edit_url      = admin_url( 'admin.php?page=ravn-affiliate-edit&product_id=' . $p->id );
             ?>
         <tr>
@@ -101,6 +107,19 @@ $pages    = ceil( $total / $per_page );
                 <?php else : echo '—'; endif; ?>
             </td>
             <td><?php echo $offers_count; ?></td>
+            <td>
+                <?php if ( ! $offers_count ) : echo '—'; else : ?>
+                    <?php if ( $stock_counts['in_stock'] ) : ?>
+                        <span style="display:inline-block;background:#d7f0dd;color:#14532d;padding:1px 7px;border-radius:3px;font-size:.85em;white-space:nowrap;" title="Aanbieders op voorraad">&#10003; <?php echo (int) $stock_counts['in_stock']; ?> op voorraad</span>
+                    <?php endif; ?>
+                    <?php if ( $stock_counts['out_of_stock'] ) : ?>
+                        <span style="display:inline-block;background:#fbdcdc;color:#7f1d1d;padding:1px 7px;border-radius:3px;font-size:.85em;white-space:nowrap;" title="Aanbieders niet op voorraad">&#10007; <?php echo (int) $stock_counts['out_of_stock']; ?> uitverkocht</span>
+                    <?php endif; ?>
+                    <?php if ( $stock_counts['unknown'] ) : ?>
+                        <span style="display:inline-block;background:#ececec;color:#444;padding:1px 7px;border-radius:3px;font-size:.85em;white-space:nowrap;" title="Voorraadstatus onbekend">? <?php echo (int) $stock_counts['unknown']; ?> onbekend</span>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </td>
             <td>
                 <code class="ravn-copy-shortcode" style="cursor:pointer" title="Klik om te kopiëren">[ravn_product id="<?php echo $p->id; ?>"]</code>
             </td>
