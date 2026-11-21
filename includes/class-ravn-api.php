@@ -588,6 +588,13 @@ class Ravn_API {
      * @throws SoapFault|Exception
      */
     private static function tradetracker_client( $customer_id, $passphrase ) {
+        // Hergebruik de geauthenticeerde client binnen één request (de cron
+        // doet veel opeenvolgende aanroepen; elke keer inloggen is traag).
+        static $cache = array();
+        $key = $customer_id . '|' . $passphrase;
+        if ( isset( $cache[ $key ] ) ) {
+            return $cache[ $key ];
+        }
         $client = new SoapClient( self::TRADETRACKER_WSDL, array(
             'trace'              => 0,
             'exceptions'         => true,
@@ -595,6 +602,7 @@ class Ravn_API {
             'cache_wsdl'         => WSDL_CACHE_MEMORY,
         ) );
         $client->authenticate( (int) $customer_id, $passphrase, false, self::tradetracker_locale(), false );
+        $cache[ $key ] = $client;
         return $client;
     }
 

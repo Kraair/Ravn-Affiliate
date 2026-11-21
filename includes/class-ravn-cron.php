@@ -360,6 +360,31 @@ class Ravn_Cron {
                 // Amazon update via ASIN (stored in ean veld)
                 break;
 
+            case 'tradetracker':
+                // Zoek het product in de TradeTracker-feed op EAN en accepteer
+                // alleen een resultaat dat aantoonbaar hetzelfde product is
+                // (zelfde EAN, of dezelfde productlink als de aanbieder). Zo
+                // wordt nooit de prijs van een ander product overgenomen.
+                // Wordt het product niet gevonden, dan blijven de bestaande
+                // gegevens ongewijzigd (geen aanname dat het uitverkocht is).
+                if ( ! empty( $product->ean ) || ! empty( $offer->affiliate_url ) ) {
+                    $rows = Ravn_API::tradetracker_get_products( (string) $product->ean, 25 );
+                    $ean  = preg_replace( '/\s+/', '', (string) $product->ean );
+                    foreach ( $rows as $row ) {
+                        $same_ean = '' !== $ean && preg_replace( '/\s+/', '', (string) $row['ean'] ) === $ean;
+                        $same_url = ! empty( $offer->affiliate_url ) && ! empty( $row['url'] ) && $row['url'] === $offer->affiliate_url;
+                        if ( ! $same_ean && ! $same_url ) continue;
+
+                        if ( '' !== (string) $row['price'] && floatval( $row['price'] ) > 0 ) {
+                            $updated['price']        = floatval( $row['price'] );
+                            $updated['stock_status'] = 'in_stock';
+                            $new_stock               = 'in_stock';
+                        }
+                        break;
+                    }
+                }
+                break;
+
             case 'daisycon':
                 if ( null === $this->daisycon_feed ) {
                     $this->daisycon_feed = Ravn_API::daisycon_get_feed();
