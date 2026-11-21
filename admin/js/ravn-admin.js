@@ -55,7 +55,7 @@
                 var domain = '';
                 try { domain = new URL(p.url).hostname.replace(/^www\./, ''); } catch (e) {}
                 addOfferRow({
-                    seller_name:   p.network === 'bol' ? 'Bol.com' : p.network,
+                    seller_name:   ({bol: 'Bol.com', amazon: 'Amazon', tradetracker: 'TradeTracker'})[p.network] || p.network,
                     seller_domain: domain,
                     affiliate_url: p.url,
                     network:       p.network,

@@ -1004,6 +1004,7 @@ class Ravn_API {
 
     public static function search_all_networks( $query, $limit = 10 ) {
         $results = array();
+        $by_network = array( 'bol' => array(), 'amazon' => array(), 'tradetracker' => array() );
 
         // Bol.com
         $bol = self::bol_search( $query, $limit );
@@ -1040,7 +1041,7 @@ class Ravn_API {
                 }
             }
 
-            $results[] = array(
+            $by_network['bol'][] = array(
                 'network'     => 'bol',
                 'title'       => isset( $item['title'] ) ? $item['title'] : '',
                 'ean'         => $ean,
@@ -1063,7 +1064,7 @@ class Ravn_API {
         // Amazon
         $amazon = self::amazon_search( $query, $limit );
         foreach ( $amazon as $item ) {
-            $results[] = array(
+            $by_network['amazon'][] = array(
                 'network'     => 'amazon',
                 'title'       => isset( $item['ItemInfo']['Title']['DisplayValue'] ) ? $item['ItemInfo']['Title']['DisplayValue'] : '',
                 'ean'         => isset( $item['ASIN'] ) ? $item['ASIN'] : '',
@@ -1072,7 +1073,33 @@ class Ravn_API {
             );
         }
 
-        return array_slice( $results, 0, $limit );
+        // TradeTracker (alleen als de koppeling is ingesteld; geeft anders een lege lijst).
+        foreach ( self::tradetracker_get_products( $query, $limit ) as $item ) {
+            if ( empty( $item['name'] ) ) continue;
+            $by_network['tradetracker'][] = array(
+                'network'     => 'tradetracker',
+                'title'       => $item['name'],
+                'ean'         => $item['ean'],
+                'image'       => $item['imageUrl'],
+                'description' => $item['description'],
+                'price'       => '' !== (string) $item['price'] ? $item['price'] : null,
+                'url'         => $item['url'],
+            );
+        }
+
+        // Verweef de netwerken (round-robin), zodat één netwerk met veel
+        // resultaten de andere niet uit de lijst verdringt.
+        $queues = array_values( array_filter( $by_network ) );
+        while ( $queues && count( $results ) < $limit ) {
+            foreach ( $queues as $k => &$queue ) {
+                $results[] = array_shift( $queue );
+                if ( ! $queue ) unset( $queues[ $k ] );
+                if ( count( $results ) >= $limit ) break;
+            }
+            unset( $queue );
+        }
+
+        return $results;
     }
 
     /**
